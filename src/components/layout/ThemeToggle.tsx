@@ -21,14 +21,14 @@ export function ThemeToggle({ showLabel = false, className }: ThemeToggleProps) 
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       className={cn(
         "group relative flex items-center gap-2 rounded-full p-1.5 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3985F5]",
-        "border border-[#DCE9F5] bg-white/80 hover:bg-[#DDF0FF]/60 text-[#243B73] shadow-xs",
+        "border border-[#E2ECF6] bg-white/80 hover:bg-[#EBF4FC]/60 text-[#243B73] shadow-xs",
         "dark:border-[#24345E] dark:bg-[#152244]/80 dark:hover:bg-[#1E2E56] dark:text-[#93C5FD]",
         className
       )}
     >
       <div className="relative flex items-center">
         {/* Toggle Track Pill */}
-        <div className="relative h-6 w-11 rounded-full bg-[#EAF5FF] transition-colors duration-300 dark:bg-[#0B132B] border border-[#DCE9F5] dark:border-[#24345E]">
+        <div className="relative h-6 w-11 rounded-full bg-[#F1F6FB] transition-colors duration-300 dark:bg-[#0B132B] border border-[#E2ECF6] dark:border-[#24345E]">
           {/* Thumb */}
           <div
             className={cn(

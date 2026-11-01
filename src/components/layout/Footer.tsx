@@ -58,10 +58,10 @@ export function Footer() {
   ]
 
   return (
-    <footer className="w-full border-t border-[#DCE9F5] bg-[#EAF5FF]/60 backdrop-blur-sm transition-colors duration-300 dark:border-[#24345E] dark:bg-[#0B132B]">
+    <footer className="w-full border-t border-[#E2ECF6] bg-[#F8FAFD] backdrop-blur-sm transition-colors duration-300 dark:border-[#24345E] dark:bg-[#0B132B]">
       {/* Top Pre-Footer Callout Card */}
       <div className="mx-auto max-w-7xl px-4 pt-12 pb-8 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl border border-[#DCE9F5] bg-gradient-to-r from-[#DDF0FF] via-white to-[#EAF5FF] p-8 shadow-xs dark:border-[#24345E] dark:from-[#152244] dark:via-[#131C38] dark:to-[#152244] sm:p-10">
+        <div className="relative overflow-hidden rounded-3xl border border-[#E2ECF6] bg-gradient-to-r from-[#EBF4FC] via-white to-[#F8FAFD] p-8 shadow-xs dark:border-[#24345E] dark:from-[#152244] dark:via-[#131C38] dark:to-[#152244] sm:p-10">
           <div className="relative z-10 flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
             <div className="max-w-xl space-y-2">
               <div className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-bold text-[#3155C8] shadow-2xs dark:bg-[#1E2E56] dark:text-[#93C5FD]">
@@ -256,10 +256,6 @@ export function Footer() {
           </p>
 
           <div className="flex items-center gap-6">
-            <span className="flex items-center gap-1.5 text-[#3155C8] dark:text-[#93C5FD]">
-              <span>Made with care for readers</span>
-              <Heart className="size-3.5 fill-current text-rose-500" />
-            </span>
             <Link
               href="/privacy"
               className="hover:text-[#3155C8] dark:hover:text-[#93C5FD] transition-colors"
