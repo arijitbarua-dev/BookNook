@@ -59,42 +59,6 @@ export function Footer() {
 
   return (
     <footer className="w-full border-t border-[#E2ECF6] bg-[#F8FAFD] backdrop-blur-sm transition-colors duration-300 dark:border-[#24345E] dark:bg-[#0B132B]">
-      {/* Top Pre-Footer Callout Card */}
-      <div className="mx-auto max-w-7xl px-4 pt-12 pb-8 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl border border-[#E2ECF6] bg-gradient-to-r from-[#EBF4FC] via-white to-[#F8FAFD] p-8 shadow-xs dark:border-[#24345E] dark:from-[#152244] dark:via-[#131C38] dark:to-[#152244] sm:p-10">
-          <div className="relative z-10 flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
-            <div className="max-w-xl space-y-2">
-              <div className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-bold text-[#3155C8] shadow-2xs dark:bg-[#1E2E56] dark:text-[#93C5FD]">
-                <Sparkles className="size-3.5" />
-                <span>Join Our Reading Community</span>
-              </div>
-              <h3 className="font-heading text-2xl font-black tracking-tight text-[#243B73] sm:text-3xl dark:text-white">
-                Discover your next favorite book today
-              </h3>
-              <p className="text-sm font-medium text-[#60718B] dark:text-[#94A3B8]">
-                Browse hundreds of curated books, borrow stories from fellow readers, or contribute titles to help knowledge grow.
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-3">
-              <Link
-                href="/books"
-                className="inline-flex items-center gap-2 rounded-2xl bg-[#3155C8] px-6 py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-[#243B73] hover:shadow-lg active:scale-95 dark:bg-[#3985F5] dark:hover:bg-[#3155C8]"
-              >
-                <span>Browse All Books</span>
-                <ArrowRight className="size-4" />
-              </Link>
-              <a
-                href="mailto:booknooklibrary@gmail.com"
-                className="inline-flex items-center gap-2 rounded-2xl border border-[#DCE9F5] bg-white px-5 py-3 text-sm font-bold text-[#243B73] shadow-xs transition-colors hover:bg-[#DDF0FF] dark:border-[#24345E] dark:bg-[#1E2E56] dark:text-white dark:hover:bg-[#24345E]"
-              >
-                <Mail className="size-4 text-[#3985F5]" />
-                <span>Contact Us</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Main Footer Multi-Column Section */}
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-5">
