@@ -32,7 +32,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
       className={`${plusJakartaSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans bg-background text-foreground transition-colors duration-300">
+      <body className="min-h-full flex flex-col font-sans bg-[#F8FAFD] dark:bg-[#0B132B] text-[#243B73] dark:text-[#F8FAFC] transition-colors duration-300">
         <ThemeProvider>
           <Navbar />
           <div className="flex-1 flex flex-col">{children}</div>

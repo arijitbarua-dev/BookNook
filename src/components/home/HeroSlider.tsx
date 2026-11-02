@@ -166,7 +166,7 @@ export function HeroSlider() {
               {/* Right Column: Clear, Full-View Illustration */}
               <div className="relative flex flex-col items-center justify-center lg:col-span-7 w-full">
                 <div className="group relative w-full overflow-hidden rounded-2xl border border-[#E2ECF6] bg-white p-2.5 sm:p-3.5 shadow-md dark:border-[#24345E] dark:bg-[#152244]">
-                  <div className="relative aspect-[718/262] w-full overflow-hidden rounded-xl bg-[#F8FAFD] dark:bg-[#0B132B]">
+                  <div className="relative aspect-[718/262] w-full overflow-hidden rounded-xl bg-white dark:bg-white">
                     <Image
                       src={firstSlide.image}
                       alt={firstSlide.heading}
@@ -277,7 +277,7 @@ export function HeroSlider() {
                       {/* Right Column: Full-View Clear Illustration */}
                       <div className="relative flex flex-col items-center justify-center lg:col-span-7 w-full">
                         <div className="group relative w-full overflow-hidden rounded-2xl border border-[#E2ECF6] bg-white p-2.5 sm:p-3.5 shadow-md transition-all duration-300 dark:border-[#24345E] dark:bg-[#152244]">
-                          <div className="relative aspect-[718/262] w-full overflow-hidden rounded-xl bg-[#F8FAFD] dark:bg-[#0B132B]">
+                          <div className="relative aspect-[718/262] w-full overflow-hidden rounded-xl bg-white dark:bg-white">
                             <Image
                               src={slide.image}
                               alt={slide.heading}
@@ -353,4 +353,3 @@ export function HeroSlider() {
     </section>
   )
 }
-
