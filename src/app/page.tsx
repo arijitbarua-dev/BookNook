@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { HeroSlider } from "@/components/home/HeroSlider";
 import { NewArrivals } from "@/components/home/NewArrivals";
 import { HowBookNookWorks } from "@/components/home/HowBookNookWorks";
+import { ExploreCategory } from "@/components/home/ExploreCategory";
 import { ReadingCommunity } from "@/components/home/ReadingCommunity";
 
 export default function HomePage() {
@@ -12,6 +13,7 @@ export default function HomePage() {
       </Suspense>
       <NewArrivals />
       <HowBookNookWorks />
+      <ExploreCategory />
       <ReadingCommunity />
     </main>
   );
