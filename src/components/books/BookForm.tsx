@@ -19,6 +19,7 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 import { uploadToImgBB } from "@/lib/upload"
+import { getAuthToken } from "@/lib/auth-client"
 
 export const CATEGORIES = ["Fiction", "Science", "History", "Kids", "Others"] as const
 export type Category = (typeof CATEGORIES)[number]
@@ -218,9 +219,15 @@ export function BookForm({ initialData, isEdit = false, bookId, onSuccess }: Boo
       // Try sending to Express backend
       let serverSaved = false
       try {
+        const token = await getAuthToken()
+        const headers: Record<string, string> = { "Content-Type": "application/json" }
+        if (token) {
+          headers["Authorization"] = `Bearer ${token}`
+        }
+
         let res = await fetch(endpoint, {
           method,
-          headers: { "Content-Type": "application/json" },
+          headers,
           body: JSON.stringify(bookPayload),
         })
 
@@ -228,7 +235,7 @@ export function BookForm({ initialData, isEdit = false, bookId, onSuccess }: Boo
         if (!res.ok && !isEdit) {
           res = await fetch(`${apiUrl}/add-book`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers,
             body: JSON.stringify(bookPayload),
           })
         }

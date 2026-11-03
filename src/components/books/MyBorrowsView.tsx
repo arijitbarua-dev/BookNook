@@ -21,7 +21,7 @@ import {
   ShieldCheck,
 } from "lucide-react"
 import { toast } from "sonner"
-import { useSession } from "@/lib/auth-client"
+import { useSession, getAuthToken } from "@/lib/auth-client"
 
 export interface BorrowRecord {
   _id: string
@@ -84,8 +84,15 @@ export function MyBorrowsView() {
     // 1. Fetch from server API
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL
+      const token = await getAuthToken()
+      const headers: Record<string, string> = {}
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`
+      }
+
       const res = await fetch(`${apiUrl}/borrows?userEmail=${encodeURIComponent(userEmail)}`, {
         cache: "no-store",
+        headers,
       })
       if (res.ok) {
         const data = await res.json()
@@ -136,8 +143,15 @@ export function MyBorrowsView() {
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
+      const token = await getAuthToken()
+      const headers: Record<string, string> = {}
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`
+      }
+
       const res = await fetch(`${apiUrl}/borrows/${borrowId}`, {
         method: "DELETE",
+        headers,
       })
 
       if (!res.ok) {
@@ -516,4 +530,3 @@ export function MyBorrowsView() {
     </div>
   )
 }
-

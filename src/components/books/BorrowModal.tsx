@@ -15,7 +15,7 @@ import {
   Sparkles,
 } from "lucide-react"
 import { toast } from "sonner"
-import { useSession } from "@/lib/auth-client"
+import { useSession, getAuthToken } from "@/lib/auth-client"
 import type { Book } from "@/components/books/BookCard"
 
 interface BorrowModalProps {
@@ -121,9 +121,15 @@ export function BorrowModal({
       let newCopies = Math.max(0, (book.availableCopies ?? 1) - 1)
 
       try {
+        const token = await getAuthToken()
+        const headers: Record<string, string> = { "Content-Type": "application/json" }
+        if (token) {
+          headers["Authorization"] = `Bearer ${token}`
+        }
+
         const res = await fetch(`${apiUrl}/borrows`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers,
           body: JSON.stringify(borrowRecord),
         })
 

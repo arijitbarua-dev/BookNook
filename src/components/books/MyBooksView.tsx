@@ -20,7 +20,7 @@ import {
   Library,
 } from "lucide-react"
 import { toast } from "sonner"
-import { useSession } from "@/lib/auth-client"
+import { useSession, getAuthToken } from "@/lib/auth-client"
 import type { Book } from "@/components/books/BookCard"
 import { EditBookModal } from "@/components/books/EditBookModal"
 
@@ -58,8 +58,15 @@ export function MyBooksView() {
     // Fetch from server API
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL
+      const token = await getAuthToken()
+      const headers: Record<string, string> = {}
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`
+      }
+
       const res = await fetch(`${apiUrl}/books?addedByEmail=${encodeURIComponent(userEmail)}`, {
         cache: "no-store",
+        headers,
       })
       if (res.ok) {
         const data = await res.json()
@@ -101,8 +108,15 @@ export function MyBooksView() {
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL
+      const token = await getAuthToken()
+      const headers: Record<string, string> = {}
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`
+      }
+
       const res = await fetch(`${apiUrl}/books/${bookId}`, {
         method: "DELETE",
+        headers,
       })
 
       if (!res.ok) {

@@ -12,6 +12,7 @@ import {
   Save,
 } from "lucide-react"
 import { toast } from "sonner"
+import { getAuthToken } from "@/lib/auth-client"
 import type { Book } from "@/components/books/BookCard"
 
 const CATEGORIES = ["Fiction", "Science", "History", "Kids", "Others"] as const
@@ -77,9 +78,15 @@ export function EditBookModal({
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL
+      const token = await getAuthToken()
+      const headers: Record<string, string> = { "Content-Type": "application/json" }
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`
+      }
+
       const res = await fetch(`${apiUrl}/books/${bookId}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify(updatedData),
       })
 
