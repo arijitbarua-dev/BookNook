@@ -12,9 +12,9 @@ import {
   BookMarked,
   Menu,
   X,
-  Sparkles,
 } from "lucide-react"
 import { ThemeToggle } from "@/components/layout/ThemeToggle"
+import { UserMenu } from "@/components/layout/UserMenu"
 import { cn } from "@/lib/utils"
 
 export function Navbar() {
@@ -101,24 +101,10 @@ export function Navbar() {
           })}
         </nav>
 
-        {/* Right Section: Theme Toggle & Login/Register Buttons */}
+        {/* Right Section: Theme Toggle & User Avatar / Login-Register */}
         <div className="hidden md:flex items-center gap-3">
           <ThemeToggle />
-          <div className="flex items-center gap-2 pl-1 border-l border-[#E2ECF6] dark:border-[#24345E]">
-            <Link
-              href="/login"
-              className="rounded-xl px-4 py-2 text-sm font-bold text-[#3155C8] transition-colors hover:bg-[#EBF4FC] dark:text-[#93C5FD] dark:hover:bg-[#1E2E56]"
-            >
-              Login
-            </Link>
-            <Link
-              href="/register"
-              className="flex items-center gap-1.5 rounded-xl bg-[#3155C8] px-4.5 py-2 text-sm font-bold text-white shadow-xs transition-all hover:bg-[#243B73] hover:shadow-md active:scale-95 dark:bg-[#3985F5] dark:hover:bg-[#3155C8]"
-            >
-              <Sparkles className="size-3.5" />
-              <span>Register</span>
-            </Link>
-          </div>
+          <UserMenu />
         </div>
 
         {/* Mobile Hamburger & Theme Toggle Button */}
@@ -163,21 +149,9 @@ export function Navbar() {
             })}
           </nav>
 
-          {/* Mobile Auth Buttons */}
-          <div className="mt-4 border-t border-[#E2ECF6] pt-4 dark:border-[#24345E] flex flex-col gap-2">
-            <Link
-              href="/login"
-              className="flex w-full items-center justify-center rounded-xl border border-[#E2ECF6] bg-white py-2.5 text-center text-sm font-bold text-[#3155C8] shadow-xs hover:bg-[#EBF4FC]/50 dark:border-[#24345E] dark:bg-[#152244] dark:text-[#93C5FD]"
-            >
-              Login
-            </Link>
-            <Link
-              href="/register"
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#3155C8] py-2.5 text-center text-sm font-bold text-white shadow-md hover:bg-[#243B73] dark:bg-[#3985F5] dark:hover:bg-[#3155C8]"
-            >
-              <Sparkles className="size-4" />
-              <span>Register</span>
-            </Link>
+          {/* Mobile User or Auth Buttons */}
+          <div className="mt-4 border-t border-[#E2ECF6] pt-4 dark:border-[#24345E]">
+            <UserMenu />
           </div>
         </div>
       )}

@@ -56,14 +56,36 @@ export function LoginForm() {
 
     try {
       // 1. Attempt Better Auth Sign In
-      const { data, error } = await signIn.email({
+      const res = await signIn.email({
         email: email.trim(),
         password: password,
       })
 
-      if (error) {
-        throw new Error(error.message || "Invalid email or password.")
+      if (res?.error) {
+        const msg = res.error.message || "Invalid email or password."
+        setErrorMessage(msg)
+        toast.error(msg, { id: toastId })
+        return
       }
+
+      // Sync active session user to local cache for instant UI availability
+      const loggedInUser = {
+        name: res?.data?.user?.name || email.split("@")[0],
+        email: res?.data?.user?.email || email.trim(),
+        image: res?.data?.user?.image || null,
+        id: res?.data?.user?.id || "user_" + Date.now(),
+      }
+      localStorage.setItem("booknook-user", JSON.stringify(loggedInUser))
+      window.dispatchEvent(new Event("storage"))
+
+      toast.success(`Welcome back, ${loggedInUser.name}!`, { id: toastId })
+      router.push(callbackUrl)
+      router.refresh()
+    } catch (err: any) {
+      console.error("Sign in error:", err)
+      const msg = err?.message || "Failed to sign in. Please verify your credentials."
+      setErrorMessage(msg)
+      toast.error(msg, { id: toastId })
     } finally {
       setIsLoading(false)
     }

@@ -77,15 +77,37 @@ export function RegisterForm() {
 
     try {
       // Attempt Better Auth Sign Up
-      const { data, error } = await signUp.email({
+      const res = await signUp.email({
         name: name.trim(),
         email: email.trim(),
         password: password,
       })
 
-      if (error) {
-        throw new Error(error.message || "Failed to create account.")
+      if (res?.error) {
+        const msg = res.error.message || "Failed to create account."
+        setErrorMessage(msg)
+        toast.error(msg, { id: toastId })
+        return
       }
+
+      // Sync active session user to local cache for instant UI availability
+      const newUser = {
+        name: res?.data?.user?.name || name.trim(),
+        email: res?.data?.user?.email || email.trim(),
+        image: res?.data?.user?.image || null,
+        id: res?.data?.user?.id || "user_" + Date.now(),
+      }
+      localStorage.setItem("booknook-user", JSON.stringify(newUser))
+      window.dispatchEvent(new Event("storage"))
+
+      toast.success(`Welcome to BookNook, ${newUser.name}!`, { id: toastId })
+      router.push(callbackUrl)
+      router.refresh()
+    } catch (err: any) {
+      console.error("Sign up error:", err)
+      const msg = err?.message || "Failed to create account. Please try again."
+      setErrorMessage(msg)
+      toast.error(msg, { id: toastId })
     } finally {
       setIsLoading(false)
     }
