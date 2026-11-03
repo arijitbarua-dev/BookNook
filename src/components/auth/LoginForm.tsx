@@ -1,0 +1,303 @@
+"use client"
+
+import * as React from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { useRouter, useSearchParams } from "next/navigation"
+import {
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  Loader2,
+  Sparkles,
+  BookOpen,
+  CheckCircle2,
+  AlertCircle,
+  ShieldCheck,
+} from "lucide-react"
+import { toast } from "sonner"
+import { authClient, signIn } from "@/lib/auth-client"
+
+export function LoginForm() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get("callbackUrl") || "/books"
+
+  const [email, setEmail] = React.useState("")
+  const [password, setPassword] = React.useState("")
+  const [showPassword, setShowPassword] = React.useState(false)
+  const [rememberMe, setRememberMe] = React.useState(true)
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [isGoogleLoading, setIsGoogleLoading] = React.useState(false)
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null)
+
+  // Demo user autofill
+  const handleAutofillDemo = () => {
+    setEmail("habib@booknook.dev")
+    setPassword("reader1234")
+    setErrorMessage(null)
+    toast.info("Demo credentials loaded! Click Sign In to continue.")
+  }
+
+  // Handle Email & Password Sign In
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setErrorMessage(null)
+
+    if (!email || !password) {
+      setErrorMessage("Please enter both email and password.")
+      return
+    }
+
+    setIsLoading(true)
+    const toastId = toast.loading("Signing in to BookNook...")
+
+    try {
+      // 1. Attempt Better Auth Sign In
+      const { data, error } = await signIn.email({
+        email: email.trim(),
+        password: password,
+      })
+
+      if (error) {
+        throw new Error(error.message || "Invalid email or password.")
+      }
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // Handle Google Social Sign In
+  const handleGoogleSignIn = async () => {
+    setIsGoogleLoading(true)
+    try {
+      await signIn.social({
+        provider: "google",
+        callbackURL: callbackUrl,
+      })
+    } catch (err: any) {
+      toast.error(err.message || "Google sign-in could not be initiated.")
+      setIsGoogleLoading(false)
+    }
+  }
+
+  return (
+    <div className="relative flex min-h-[calc(100vh-5rem)] items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+      {/* Background ambient decorative glows */}
+      <div className="pointer-events-none absolute -top-10 left-1/2 -z-10 h-[500px] w-[600px] -translate-x-1/2 rounded-full bg-gradient-to-tr from-[#3985F5]/15 via-[#A9D2F5]/20 to-transparent blur-3xl dark:from-[#3155C8]/15 dark:via-[#152244]/40" />
+
+      <div className="w-full max-w-md space-y-8">
+        {/* Header Card */}
+        <div className="text-center">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2.5 transition-transform hover:scale-105"
+          >
+            <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border-2 border-[#DCE9F5] bg-white shadow-sm dark:border-[#24345E] dark:bg-[#152244]">
+              <Image
+                src="/images/logo.jpg"
+                alt="BookNook Logo"
+                width={48}
+                height={48}
+                className="h-full w-full object-cover"
+                priority
+              />
+            </div>
+            <div className="text-left">
+              <span className="font-heading text-2xl font-black tracking-tight text-[#243B73] dark:text-white">
+                Book<span className="text-[#3985F5]">Nook</span>
+              </span>
+              <span className="block text-[11px] font-semibold text-[#60718B] dark:text-[#94A3B8]">
+                A Small Online Library
+              </span>
+            </div>
+          </Link>
+
+          <h1 className="mt-6 font-heading text-2xl font-extrabold tracking-tight text-[#243B73] sm:text-3xl dark:text-white">
+            Welcome Back
+          </h1>
+          <p className="mt-2 text-sm text-[#60718B] dark:text-[#94A3B8]">
+            Sign in to access your borrowed books, reservations, and reading lists.
+          </p>
+        </div>
+
+        {/* Form Container Card */}
+        <div className="relative overflow-hidden rounded-3xl border border-[#E2ECF6] bg-white/90 p-8 shadow-xl backdrop-blur-xl transition-all duration-300 dark:border-[#24345E] dark:bg-[#152244]/90 sm:p-10">
+          {/* Error Banner */}
+          {errorMessage && (
+            <div className="mb-6 flex items-start gap-3 rounded-2xl border border-rose-200 bg-rose-50/90 p-4 text-xs font-semibold text-rose-800 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-300">
+              <AlertCircle className="size-4 shrink-0 text-rose-600 mt-0.5" />
+              <span>{errorMessage}</span>
+            </div>
+          )}
+
+          {/* Social Sign-in Button */}
+          <div>
+            <button
+              type="button"
+              onClick={handleGoogleSignIn}
+              disabled={isGoogleLoading || isLoading}
+              className="flex w-full items-center justify-center gap-3 rounded-2xl border border-[#DCE9F5] bg-white px-4 py-3 text-sm font-bold text-[#243B73] shadow-2xs transition-all hover:bg-[#F1F6FB] hover:border-[#3985F5] hover:shadow-sm active:scale-98 disabled:cursor-not-allowed disabled:opacity-60 dark:border-[#24345E] dark:bg-[#0B132B] dark:text-white dark:hover:bg-[#1E2E56]"
+            >
+              {isGoogleLoading ? (
+                <Loader2 className="size-4 animate-spin text-[#3985F5]" />
+              ) : (
+                <svg className="size-4.5" viewBox="0 0 24 24">
+                  <path
+                    fill="#4285F4"
+                    d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.36 24 12 24z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.02 0 12s.45 3.82 1.25 5.42l4.03-3.15z"
+                  />
+                  <path
+                    fill="#EA4335"
+                    d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.36 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
+                  />
+                </svg>
+              )}
+              <span>Continue with Google</span>
+            </button>
+          </div>
+
+          {/* Divider */}
+          <div className="relative my-6 flex items-center justify-center">
+            <div className="w-full border-t border-[#E2ECF6] dark:border-[#24345E]" />
+            <span className="absolute bg-white px-3 text-xs font-semibold uppercase tracking-wider text-[#94A3B8] dark:bg-[#152244]">
+              or sign in with email
+            </span>
+          </div>
+
+          {/* Login Form */}
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Email Field */}
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-xs font-bold uppercase tracking-wider text-[#243B73] dark:text-slate-200"
+              >
+                Email Address
+              </label>
+              <div className="relative mt-2">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#60718B] dark:text-[#94A3B8]">
+                  <Mail className="size-4" />
+                </div>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="block w-full rounded-2xl border border-[#DCE9F5] bg-[#F8FAFD] py-3 pr-3.5 pl-10 text-sm font-medium text-[#243B73] placeholder-[#94A3B8] transition-colors focus:border-[#3985F5] focus:bg-white focus:outline-none focus:ring-3 focus:ring-[#3985F5]/15 dark:border-[#24345E] dark:bg-[#0B132B] dark:text-white dark:placeholder-[#64748B] dark:focus:bg-[#0B132B]"
+                />
+              </div>
+            </div>
+
+            {/* Password Field */}
+            <div>
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor="password"
+                  className="block text-xs font-bold uppercase tracking-wider text-[#243B73] dark:text-slate-200"
+                >
+                  Password
+                </label>
+                {/* <button
+                  type="button"
+                  onClick={() => toast.info("Password reset link will be sent to your email.")}
+                  className="text-xs font-semibold text-[#3155C8] hover:underline dark:text-[#93C5FD]"
+                >
+                  Forgot password?
+                </button> */}
+              </div>
+              <div className="relative mt-2">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#60718B] dark:text-[#94A3B8]">
+                  <Lock className="size-4" />
+                </div>
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="block w-full rounded-2xl border border-[#DCE9F5] bg-[#F8FAFD] py-3 pr-11 pl-10 text-sm font-medium text-[#243B73] placeholder-[#94A3B8] transition-colors focus:border-[#3985F5] focus:bg-white focus:outline-none focus:ring-3 focus:ring-[#3985F5]/15 dark:border-[#24345E] dark:bg-[#0B132B] dark:text-white dark:placeholder-[#64748B] dark:focus:bg-[#0B132B]"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-[#60718B] hover:text-[#243B73] dark:text-[#94A3B8] dark:hover:text-white"
+                >
+                  {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                </button>
+              </div>
+            </div>
+
+            {/* Remember Me Toggle */}
+            <div className="flex items-center justify-between pt-1">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="size-4 rounded border-slate-300 text-[#3155C8] focus:ring-[#3985F5] dark:border-slate-700 dark:bg-[#0B132B]"
+                />
+                <span className="text-xs font-semibold text-[#60718B] dark:text-[#94A3B8]">
+                  Remember this device
+                </span>
+              </label>
+
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                {/* <ShieldCheck className="size-3.5" /> */}
+                {/* <span>SSL Encrypted</span> */}
+              </span>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isLoading || isGoogleLoading}
+              className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#3155C8] py-3.5 px-4 text-sm font-bold text-white shadow-md transition-all duration-200 hover:bg-[#243B73] hover:shadow-lg active:scale-98 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-[#3985F5] dark:hover:bg-[#3155C8]"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" />
+                  <span>Signing In...</span>
+                </>
+              ) : (
+                <>
+                  <span>Sign In</span>
+                  <ArrowRight className="size-4" />
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Register Link */}
+          <div className="mt-6 text-center text-xs text-[#60718B] dark:text-[#94A3B8]">
+            <span>Don&apos;t have an account yet? </span>
+            <Link
+              href="/register"
+              className="font-bold text-[#3155C8] hover:underline dark:text-[#93C5FD]"
+            >
+              Create Account
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
