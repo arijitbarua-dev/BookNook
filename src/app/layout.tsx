@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import * as React from "react";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Navbar } from "@/components/layout/Navbar";
@@ -32,9 +33,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
       className={`${plusJakartaSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans bg-[#F8FAFD] dark:bg-[#0B132B] text-[#243B73] dark:text-[#F8FAFC] transition-colors duration-300">
+      <body
+        suppressHydrationWarning
+        className="min-h-full flex flex-col font-sans bg-[#F8FAFD] dark:bg-[#0B132B] text-[#243B73] dark:text-[#F8FAFC] transition-colors duration-300"
+      >
         <ThemeProvider>
-          <Navbar />
+          <React.Suspense fallback={<header className="sticky top-0 z-50 h-20 w-full border-b border-[#E2ECF6] bg-white/80 backdrop-blur-md dark:border-[#1E293B] dark:bg-[#0B132B]/85" />}>
+            <Navbar />
+          </React.Suspense>
           <div className="flex-1 flex flex-col">{children}</div>
           <Footer />
           <Toaster position="top-right" richColors closeButton />

@@ -12,6 +12,43 @@ interface ThemeToggleProps {
 
 export function ThemeToggle({ showLabel = false, className }: ThemeToggleProps) {
   const { theme, toggleTheme } = useTheme()
+  const [mounted, setMounted] = React.useState(false)
+
+  // Ensure component only renders theme-dependent UI after client mount
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Render static baseline placeholder during SSR and initial hydration pass
+  if (!mounted) {
+    return (
+      <button
+        type="button"
+        disabled
+        aria-label="Toggle theme"
+        className={cn(
+          "group relative flex items-center gap-2 rounded-full p-1.5 transition-none",
+          "border border-[#E2ECF6] bg-white/80 text-[#243B73] shadow-xs",
+          "dark:border-[#24345E] dark:bg-[#152244]/80 dark:text-[#93C5FD]",
+          className
+        )}
+      >
+        <div className="relative flex items-center">
+          <div className="relative h-6 w-11 rounded-full bg-[#F1F6FB] border border-[#E2ECF6] dark:border-[#24345E] dark:bg-[#0B132B]">
+            <div className="absolute top-0.5 left-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-[#3155C8] text-white shadow-xs">
+              <Sun className="size-2.5 text-white" />
+            </div>
+          </div>
+        </div>
+        {showLabel && (
+          <span className="text-xs font-medium tracking-tight text-[#60718B] dark:text-[#94A3B8] pr-1">
+            Light
+          </span>
+        )}
+      </button>
+    )
+  }
+
   const isDark = theme === "dark"
 
   return (
@@ -53,4 +90,3 @@ export function ThemeToggle({ showLabel = false, className }: ThemeToggleProps) 
     </button>
   )
 }
-
