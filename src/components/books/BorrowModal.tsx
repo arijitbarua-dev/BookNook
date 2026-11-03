@@ -15,6 +15,7 @@ import {
   Sparkles,
 } from "lucide-react"
 import { toast } from "sonner"
+import { useSession } from "@/lib/auth-client"
 import type { Book } from "@/components/books/BookCard"
 
 interface BorrowModalProps {
@@ -30,10 +31,34 @@ export function BorrowModal({
   book,
   onBorrowSuccess,
 }: BorrowModalProps) {
-  const [userName, setUserName] = React.useState("Habib Rahman")
-  const [userEmail, setUserEmail] = React.useState("habib@booknook.dev")
+  const { data: session } = useSession()
+  const [userName, setUserName] = React.useState("Library Reader")
+  const [userEmail, setUserEmail] = React.useState("")
   const [isSubmitting, setIsSubmitting] = React.useState(false)
   const [borrowDays, setBorrowDays] = React.useState<number>(14)
+
+  // Sync active user identity
+  React.useEffect(() => {
+    if (session?.user?.email) {
+      setUserName(session.user.name || "Library Reader")
+      setUserEmail(session.user.email)
+      return
+    }
+
+    try {
+      const stored = localStorage.getItem("booknook-user")
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        if (parsed.email) {
+          setUserName(parsed.name || "Library Reader")
+          setUserEmail(parsed.email)
+          return
+        }
+      }
+    } catch {
+      // Ignore
+    }
+  }, [session, isOpen])
 
   // Current borrow date
   const borrowDateStr = React.useMemo(() => {
@@ -57,6 +82,26 @@ export function BorrowModal({
   if (!isOpen) return null
 
   const handleConfirmBorrow = async () => {
+    // Determine effective user
+    let activeEmail = userEmail
+    let activeName = userName
+
+    if (!activeEmail) {
+      try {
+        const stored = localStorage.getItem("booknook-user")
+        if (stored) {
+          const parsed = JSON.parse(stored)
+          activeEmail = parsed.email || ""
+          activeName = parsed.name || activeName
+        }
+      } catch {}
+    }
+
+    if (!activeEmail) {
+      toast.error("Please sign in to borrow books.")
+      return
+    }
+
     setIsSubmitting(true)
     const toastId = toast.loading("Processing your borrow request...")
 
@@ -65,8 +110,8 @@ export function BorrowModal({
       bookId: String(bookId),
       bookTitle: book.title,
       bookImage: book.image,
-      userName: userName,
-      userEmail: userEmail,
+      userName: activeName,
+      userEmail: activeEmail,
       borrowDate: new Date().toISOString(),
       returnDate: new Date(Date.now() + borrowDays * 24 * 60 * 60 * 1000).toISOString(),
     }
