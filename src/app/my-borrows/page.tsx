@@ -2,6 +2,7 @@ import * as React from "react"
 import { Metadata } from "next"
 import { MyBorrowsView } from "@/components/books/MyBorrowsView"
 import { MyBorrowsSkeleton } from "@/components/books/MyBorrowsSkeleton"
+import { RequireAuth } from "@/components/auth/RequireAuth"
 
 export const metadata: Metadata = {
   title: "My Borrows",
@@ -10,8 +11,10 @@ export const metadata: Metadata = {
 
 export default function MyBorrowsPage() {
   return (
-    <React.Suspense fallback={<MyBorrowsSkeleton />}>
-      <MyBorrowsView />
-    </React.Suspense>
+    <RequireAuth>
+      <React.Suspense fallback={<MyBorrowsSkeleton />}>
+        <MyBorrowsView />
+      </React.Suspense>
+    </RequireAuth>
   )
 }

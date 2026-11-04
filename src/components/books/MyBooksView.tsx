@@ -39,16 +39,32 @@ export function MyBooksView() {
 
   // Sync user state from Better Auth session or local cache
   React.useEffect(() => {
-    if (session?.user?.email) {
-      setCurrentUser({
-        name: session.user.name || "Member",
-        email: session.user.email,
-      })
-      return
+    const updateUser = () => {
+      let name = session?.user?.name
+      let email = session?.user?.email
+
+      if (!email) {
+        try {
+          const stored = localStorage.getItem("booknook-user")
+          if (stored) {
+            const parsed = JSON.parse(stored)
+            email = parsed.email
+            name = name || parsed.name
+          }
+        } catch {}
+      }
+
+      if (email) {
+        setCurrentUser({ name: name || "Member", email })
+      } else if (!sessionLoading) {
+        setCurrentUser(null)
+      }
     }
 
-    setCurrentUser(null)
-  }, [session])
+    updateUser()
+    window.addEventListener("storage", updateUser)
+    return () => window.removeEventListener("storage", updateUser)
+  }, [session, sessionLoading])
 
   // Fetch books added by current user
   const fetchMyBooks = React.useCallback(async (userEmail: string) => {

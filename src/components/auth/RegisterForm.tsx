@@ -24,7 +24,12 @@ import { signUp, signIn } from "@/lib/auth-client"
 export function RegisterForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get("callbackUrl") || "/books"
+  const rawCallbackUrl = searchParams.get("callbackUrl") || "/books"
+  // Only follow internal paths so registration never redirects off-site
+  const callbackUrl =
+    rawCallbackUrl.startsWith("/") && !rawCallbackUrl.startsWith("//")
+      ? rawCallbackUrl
+      : "/books"
 
   const [name, setName] = React.useState("")
   const [email, setEmail] = React.useState("")

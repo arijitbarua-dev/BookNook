@@ -12,7 +12,11 @@ export async function proxy(request: NextRequest) {
     const user = session?.user
 
     if(!user){
-        return NextResponse.redirect(new URL('/login', request.url))
+        const loginUrl = new URL('/login', request.url)
+        // Remember the private page the visitor tried to open so they can
+        // be sent back there after signing in
+        loginUrl.searchParams.set('callbackUrl', request.nextUrl.pathname + request.nextUrl.search)
+        return NextResponse.redirect(loginUrl)
     }
   
 }

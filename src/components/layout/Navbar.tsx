@@ -15,10 +15,13 @@ import {
 } from "lucide-react"
 import { ThemeToggle } from "@/components/layout/ThemeToggle"
 import { UserMenu } from "@/components/layout/UserMenu"
+import { useSession } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
 
 export function Navbar() {
   const pathname = usePathname()
+  const { data: session, isPending: sessionLoading } = useSession()
+  const [hasLocalUser, setHasLocalUser] = React.useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
 
   // Close mobile menu on route change
@@ -26,13 +29,38 @@ export function Navbar() {
     setMobileMenuOpen(false)
   }, [pathname])
 
+  // Track the locally cached user so guests get sent to Login
+  React.useEffect(() => {
+    const readStorageUser = () => {
+      try {
+        setHasLocalUser(Boolean(localStorage.getItem("booknook-user")))
+      } catch {
+        setHasLocalUser(false)
+      }
+    }
+
+    readStorageUser()
+    window.addEventListener("storage", readStorageUser)
+    return () => window.removeEventListener("storage", readStorageUser)
+  }, [])
+
+  const isLoggedIn = Boolean(session?.user) || hasLocalUser
+
   const navLinks = [
-    { label: "Home", href: "/", icon: BookOpen },
-    { label: "All Books", href: "/books", icon: Library },
-    { label: "Add Book", href: "/add-book", icon: PlusCircle },
-    { label: "My Books", href: "/my-books", icon: Bookmark },
-    { label: "My Borrows", href: "/my-borrows", icon: BookMarked },
+    { label: "Home", href: "/", icon: BookOpen, protected: false },
+    { label: "All Books", href: "/books", icon: Library, protected: false },
+    { label: "Add Book", href: "/add-book", icon: PlusCircle, protected: true },
+    { label: "My Books", href: "/my-books", icon: Bookmark, protected: true },
+    { label: "My Borrows", href: "/my-borrows", icon: BookMarked, protected: true },
   ]
+
+  // Guests are sent to Login and returned here after signing in
+  const getLinkHref = (link: (typeof navLinks)[number]) => {
+    if (link.protected && !sessionLoading && !isLoggedIn) {
+      return `/login?callbackUrl=${encodeURIComponent(link.href)}`
+    }
+    return link.href
+  }
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/"
@@ -79,7 +107,7 @@ export function Navbar() {
             return (
               <Link
                 key={link.href}
-                href={link.href}
+                href={getLinkHref(link)}
                 className={cn(
                   "relative flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-semibold transition-all duration-200",
                   active
@@ -134,7 +162,7 @@ export function Navbar() {
               return (
                 <Link
                   key={link.href}
-                  href={link.href}
+                  href={getLinkHref(link)}
                   className={cn(
                     "flex items-center gap-3 rounded-xl px-4 py-2.5 text-base font-semibold transition-colors",
                     active

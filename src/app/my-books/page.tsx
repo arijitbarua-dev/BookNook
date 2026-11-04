@@ -2,6 +2,7 @@ import * as React from "react"
 import { Metadata } from "next"
 import { MyBooksView } from "@/components/books/MyBooksView"
 import { MyBooksSkeleton } from "@/components/books/MyBooksSkeleton"
+import { RequireAuth } from "@/components/auth/RequireAuth"
 
 export const metadata: Metadata = {
   title: "My Books",
@@ -10,8 +11,10 @@ export const metadata: Metadata = {
 
 export default function MyBooksPage() {
   return (
-    <React.Suspense fallback={<MyBooksSkeleton />}>
-      <MyBooksView />
-    </React.Suspense>
+    <RequireAuth>
+      <React.Suspense fallback={<MyBooksSkeleton />}>
+        <MyBooksView />
+      </React.Suspense>
+    </RequireAuth>
   )
 }

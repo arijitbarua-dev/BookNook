@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { BookPlus, ChevronLeft, Sparkles, BookOpen } from "lucide-react"
 import { BookForm } from "@/components/books/BookForm"
+import { RequireAuth } from "@/components/auth/RequireAuth"
 
 export const metadata: Metadata = {
   title: "Add Book",
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
 
 export default function AddBookPage() {
   return (
+    <RequireAuth>
     <div className="relative w-full py-10 sm:py-14 lg:py-18">
       {/* Background ambient lighting */}
       <div className="pointer-events-none absolute top-10 left-1/2 -z-10 h-96 w-[700px] -translate-x-1/2 rounded-full bg-gradient-to-tr from-[#3985F5]/10 via-[#A9D2F5]/15 to-transparent blur-3xl dark:from-[#152244]/40" />
@@ -55,6 +57,6 @@ export default function AddBookPage() {
         </div>
       </div>
     </div>
+    </RequireAuth>
   )
 }
-

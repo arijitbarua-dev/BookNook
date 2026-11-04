@@ -68,7 +68,7 @@ const slides: SlideData[] = [
     highlightWord: "Way",
     description:
       "Borrow your favorite books and make reading a part of your everyday life. Accessible anytime, on any device.",
-    buttonText: "Explore Library",
+    buttonText: "Browse Books",
     buttonHref: "/books",
     image: "/images/slider2.jpg",
     statBadge: {
@@ -85,7 +85,7 @@ const slides: SlideData[] = [
     highlightWord: "Knowledge",
     description:
       "Add books to our growing community library and help others discover something wonderful. Learn and share together.",
-    buttonText: "Start Exploring",
+    buttonText: "Browse Books",
     buttonHref: "/books",
     image: "/images/slider3.jpg",
     statBadge: {

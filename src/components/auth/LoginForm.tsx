@@ -23,7 +23,12 @@ import { authClient, signIn } from "@/lib/auth-client"
 export function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get("callbackUrl") || "/books"
+  const rawCallbackUrl = searchParams.get("callbackUrl") || "/books"
+  // Only follow internal paths so login never redirects off-site
+  const callbackUrl =
+    rawCallbackUrl.startsWith("/") && !rawCallbackUrl.startsWith("//")
+      ? rawCallbackUrl
+      : "/books"
 
   const [email, setEmail] = React.useState("")
   const [password, setPassword] = React.useState("")
@@ -32,14 +37,6 @@ export function LoginForm() {
   const [isLoading, setIsLoading] = React.useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = React.useState(false)
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null)
-
-  // Demo user autofill
-  const handleAutofillDemo = () => {
-    setEmail("habib@booknook.dev")
-    setPassword("reader1234")
-    setErrorMessage(null)
-    toast.info("Demo credentials loaded! Click Sign In to continue.")
-  }
 
   // Handle Email & Password Sign In
   const handleSubmit = async (e: React.FormEvent) => {
@@ -301,7 +298,7 @@ export function LoginForm() {
                 </>
               ) : (
                 <>
-                  <span>Sign In</span>
+                  <span>Log In</span>
                   <ArrowRight className="size-4" />
                 </>
               )}
