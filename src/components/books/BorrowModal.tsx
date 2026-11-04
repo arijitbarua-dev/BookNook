@@ -144,9 +144,27 @@ export function BorrowModal({
         }
       } catch (networkErr: any) {
         if (networkErr.message?.includes("already borrowed")) {
+          onBorrowSuccess(book.availableCopies ?? 0)
+          window.dispatchEvent(new Event("storage"))
           throw networkErr
         }
         console.warn("Server request failed!", networkErr)
+      }
+
+      // Sync with localStorage borrows cache
+      try {
+        const storedBorrows = JSON.parse(localStorage.getItem("booknook-borrows") || "[]")
+        const exists = storedBorrows.some((b: any) => String(b.bookId) === String(bookId))
+        if (!exists) {
+          storedBorrows.unshift({
+            ...borrowRecord,
+            _id: `borrow_${Date.now()}`,
+          })
+          localStorage.setItem("booknook-borrows", JSON.stringify(storedBorrows))
+        }
+        window.dispatchEvent(new Event("storage"))
+      } catch {
+        // Ignore
       }
 
       toast.success(`You have successfully borrowed "${book.title}"!`, {

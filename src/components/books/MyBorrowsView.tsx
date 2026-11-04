@@ -142,7 +142,7 @@ export function MyBorrowsView() {
     const borrowId = returningBorrow._id
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL
       const token = await getAuthToken()
       const headers: Record<string, string> = {}
       if (token) {
@@ -163,6 +163,7 @@ export function MyBorrowsView() {
         const localBorrows = JSON.parse(localStorage.getItem("booknook-borrows") || "[]")
         const filtered = localBorrows.filter((b: any) => b._id !== borrowId && b.bookId !== returningBorrow.bookId)
         localStorage.setItem("booknook-borrows", JSON.stringify(filtered))
+        window.dispatchEvent(new Event("storage"))
 
         // Increment copy in local book cache
         const localBooks = JSON.parse(localStorage.getItem("booknook-books") || "[]")

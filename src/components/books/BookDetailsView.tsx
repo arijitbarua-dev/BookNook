@@ -18,10 +18,12 @@ import {
   Share2,
   Clock,
   ShieldCheck,
+  ArrowRight,
 } from "lucide-react"
 import { toast } from "sonner"
 import { type Book } from "@/components/books/BookCard"
 import { BorrowModal } from "@/components/books/BorrowModal"
+import { useSession, getAuthToken } from "@/lib/auth-client"
 
 interface BookDetailsViewProps {
   bookId: string
@@ -29,6 +31,7 @@ interface BookDetailsViewProps {
 
 export function BookDetailsView({ bookId }: BookDetailsViewProps) {
   const router = useRouter()
+  const { data: session } = useSession()
   const [book, setBook] = React.useState<Book | null>(null)
   const [loading, setLoading] = React.useState(true)
   const [isBorrowModalOpen, setIsBorrowModalOpen] = React.useState(false)
@@ -61,20 +64,98 @@ export function BookDetailsView({ bookId }: BookDetailsViewProps) {
     loadBook()
   }, [bookId])
 
-  // Check if current user has already borrowed this book
-  React.useEffect(() => {
+  // Check if current user has already borrowed this book (from local cache and server)
+  const checkBorrowStatus = React.useCallback(async (userEmail: string, currentBookId: string) => {
+    if (!userEmail || !currentBookId) return
+
+    const normalizedEmail = userEmail.trim().toLowerCase()
+    const targetBookId = String(currentBookId)
+
+    // 1. Check local storage cache first
     try {
       const storedBorrows = JSON.parse(localStorage.getItem("booknook-borrows") || "[]")
-      const already = storedBorrows.some((b: any) => String(b.bookId) === String(bookId))
-      setIsAlreadyBorrowed(already)
+      const localMatch = storedBorrows.some(
+        (b: any) =>
+          String(b.bookId) === targetBookId &&
+          (!b.userEmail || b.userEmail.toLowerCase() === normalizedEmail)
+      )
+      if (localMatch) {
+        setIsAlreadyBorrowed(true)
+      }
     } catch {
       // Ignore
     }
-  }, [bookId])
+
+    // 2. Fetch authoritative active borrows from backend API
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL
+      const token = await getAuthToken()
+      const headers: Record<string, string> = {}
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`
+      }
+
+      const res = await fetch(`${apiUrl}/borrows?userEmail=${encodeURIComponent(normalizedEmail)}`, {
+        cache: "no-store",
+        headers,
+      })
+
+      if (res.ok) {
+        const serverBorrows = await res.json()
+        if (Array.isArray(serverBorrows)) {
+          // Sync with localStorage
+          try {
+            localStorage.setItem("booknook-borrows", JSON.stringify(serverBorrows))
+          } catch {}
+
+          const hasActiveBorrow = serverBorrows.some(
+            (b: any) => String(b.bookId) === targetBookId
+          )
+          setIsAlreadyBorrowed(hasActiveBorrow)
+        }
+      }
+    } catch (err) {
+      console.warn("Could not verify borrow status from backend:", err)
+    }
+  }, [])
+
+  React.useEffect(() => {
+    let email = session?.user?.email
+    if (!email) {
+      try {
+        const stored = localStorage.getItem("booknook-user")
+        if (stored) {
+          email = JSON.parse(stored).email
+        }
+      } catch {}
+    }
+
+    if (email) {
+      checkBorrowStatus(email, bookId)
+    }
+
+    const handleStorageChange = () => {
+      let currentEmail = session?.user?.email
+      if (!currentEmail) {
+        try {
+          const stored = localStorage.getItem("booknook-user")
+          if (stored) currentEmail = JSON.parse(stored).email
+        } catch {}
+      }
+      if (currentEmail) {
+        checkBorrowStatus(currentEmail, bookId)
+      }
+    }
+
+    window.addEventListener("storage", handleStorageChange)
+    return () => window.removeEventListener("storage", handleStorageChange)
+  }, [session, bookId, checkBorrowStatus])
 
   const handleBorrowSuccess = (updatedCopies: number) => {
     setBook((prev) => (prev ? { ...prev, availableCopies: updatedCopies } : null))
     setIsAlreadyBorrowed(true)
+    // Dispatch storage event so other components immediately know
+    window.dispatchEvent(new Event("storage"))
   }
 
   if (loading) {
@@ -259,9 +340,25 @@ export function BookDetailsView({ bookId }: BookDetailsViewProps) {
               {/* Action Area: Borrow Button */}
               <div className="mt-8 pt-6 border-t border-[#E2ECF6] dark:border-[#24345E] flex flex-wrap items-center gap-4">
                 {isAlreadyBorrowed ? (
-                  <div className="flex items-center gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-3 text-xs font-bold text-amber-800 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-300">
-                    <CheckCircle2 className="size-4 text-amber-600" />
-                    <span>You currently have an active borrow for this book.</span>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-amber-300 bg-amber-50/90 p-4 shadow-xs dark:border-amber-900/60 dark:bg-amber-950/40">
+                    <div className="flex items-center gap-2.5">
+                      <CheckCircle2 className="size-5 text-amber-600 dark:text-amber-400 shrink-0" />
+                      <div>
+                        <p className="text-xs font-bold text-amber-900 dark:text-amber-200">
+                          You currently have this book borrowed.
+                        </p>
+                        <p className="text-[11px] font-medium text-amber-700 dark:text-amber-400">
+                          You cannot borrow the same book again until you return it.
+                        </p>
+                      </div>
+                    </div>
+                    <Link
+                      href="/my-borrows"
+                      className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-amber-600 px-4 py-2 text-xs font-bold text-white shadow-xs transition-all hover:bg-amber-700 active:scale-95 dark:bg-amber-500 dark:text-black dark:hover:bg-amber-400 shrink-0"
+                    >
+                      <span>Return in My Borrows</span>
+                      <ArrowRight className="size-3.5" />
+                    </Link>
                   </div>
                 ) : isAvailable ? (
                   <button
