@@ -33,12 +33,19 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
       className={`${plusJakartaSans.variable} h-full antialiased`}
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("booknook-theme");var p=window.matchMedia("(prefers-color-scheme: dark)").matches;if(t==="dark"||(!t&&p)){document.documentElement.classList.add("dark");}else{document.documentElement.classList.remove("dark");}}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body
         suppressHydrationWarning
-        className="min-h-full flex flex-col font-sans bg-[#F8FAFD] dark:bg-[#0B132B] text-[#243B73] dark:text-[#F8FAFC] transition-colors duration-300"
+        className="min-h-full flex flex-col font-sans bg-[#EAF3FC] dark:bg-[#0B132B] text-[#243B73] dark:text-[#F8FAFC]"
       >
         <ThemeProvider>
-          <React.Suspense fallback={<header className="sticky top-0 z-50 h-20 w-full border-b border-[#E2ECF6] bg-white/80 backdrop-blur-md dark:border-[#1E293B] dark:bg-[#0B132B]/85" />}>
+          <React.Suspense fallback={<header className="sticky top-0 z-50 h-20 w-full border-b border-[#DCE9F5]/70 bg-[#EAF3FC]/90 backdrop-blur-md dark:border-[#24345E] dark:bg-[#0B132B]/90" />}>
             <Navbar />
           </React.Suspense>
           <div className="flex-1 flex flex-col">{children}</div>

@@ -68,14 +68,14 @@ export function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[#E2ECF6] bg-white/90 backdrop-blur-md transition-colors duration-300 dark:border-[#24345E] dark:bg-[#0B132B]/90">
+    <header className="sticky top-0 z-50 w-full border-b border-[#DCE9F5]/70 bg-[#EAF3FC]/90 backdrop-blur-md dark:border-[#24345E] dark:bg-[#0B132B]/90">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Brand / Logo */}
         <Link
           href="/"
           className="group flex items-center gap-3 transition-transform duration-200 active:scale-95"
         >
-          <div className="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl border-2 border-[#E2ECF6] bg-[#F1F6FB] shadow-xs transition-all duration-300 group-hover:border-[#3985F5] group-hover:shadow-md dark:border-[#24345E] dark:bg-[#152244]">
+          <div className="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl border-2 border-[#DCE9F5] bg-white shadow-xs transition-all duration-300 group-hover:border-[#3985F5] group-hover:shadow-md dark:border-[#24345E] dark:bg-[#152244]">
             <Image
               src="/images/logo.jpg"
               alt="BookNook Logo"
@@ -90,7 +90,7 @@ export function Navbar() {
               <span className="font-heading text-2xl font-black tracking-tight text-[#243B73] transition-colors group-hover:text-[#3155C8] dark:text-white dark:group-hover:text-[#93C5FD]">
                 Book<span className="text-[#3985F5]">Nook</span>
               </span>
-              <span className="hidden sm:inline-flex items-center rounded-full bg-[#EBF4FC] px-2 py-0.5 text-[10px] font-semibold text-[#3155C8] dark:bg-[#1E2E56] dark:text-[#93C5FD]">
+              <span className="hidden sm:inline-flex items-center rounded-full bg-white/80 border border-[#DCE9F5] px-2 py-0.5 text-[10px] font-semibold text-[#3155C8] dark:border-[#24345E] dark:bg-[#1E2E56] dark:text-[#93C5FD]">
                 Library
               </span>
             </div>
@@ -109,10 +109,10 @@ export function Navbar() {
                 key={link.href}
                 href={getLinkHref(link)}
                 className={cn(
-                  "relative flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-semibold transition-all duration-200",
+                  "relative flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-semibold transition-all duration-150",
                   active
-                    ? "bg-[#EBF4FC] text-[#3155C8] shadow-xs dark:bg-[#1E2E56] dark:text-[#93C5FD]"
-                    : "text-[#60718B] hover:bg-[#F1F6FB] hover:text-[#243B73] dark:text-[#94A3B8] dark:hover:bg-[#152244] dark:hover:text-white"
+                    ? "border border-[#DCE9F5] bg-white text-[#3155C8] shadow-xs dark:border-[#334676] dark:bg-[#1E2E56] dark:text-[#93C5FD]"
+                    : "text-[#60718B] hover:bg-white/60 hover:text-[#243B73] dark:text-[#94A3B8] dark:hover:bg-[#152244]/60 dark:hover:text-white"
                 )}
               >
                 <link.icon
@@ -142,7 +142,7 @@ export function Navbar() {
             type="button"
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-label="Toggle mobile menu"
-            className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#E2ECF6] bg-white text-[#243B73] shadow-xs transition-colors hover:bg-[#F1F6FB] dark:border-[#24345E] dark:bg-[#152244] dark:text-white dark:hover:bg-[#1E2E56]"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#DCE9F5] bg-white text-[#243B73] shadow-xs transition-colors hover:bg-[#F1F6FB] dark:border-[#24345E] dark:bg-[#152244] dark:text-white dark:hover:bg-[#1E2E56]"
           >
             {mobileMenuOpen ? (
               <X className="size-5" />
@@ -155,7 +155,7 @@ export function Navbar() {
 
       {/* Mobile Drawer / Dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-[#E2ECF6] bg-white/95 px-4 pt-3 pb-6 shadow-xl backdrop-blur-lg dark:border-[#24345E] dark:bg-[#0B132B]/95 animate-in slide-in-from-top-4 duration-200">
+        <div className="md:hidden border-t border-[#DCE9F5] bg-[#EAF3FC]/95 px-4 pt-3 pb-6 shadow-xl backdrop-blur-lg dark:border-[#24345E] dark:bg-[#0B132B]/95 animate-in slide-in-from-top-4 duration-200">
           <nav className="space-y-1">
             {navLinks.map((link) => {
               const active = isActive(link.href)
@@ -166,8 +166,8 @@ export function Navbar() {
                   className={cn(
                     "flex items-center gap-3 rounded-xl px-4 py-2.5 text-base font-semibold transition-colors",
                     active
-                      ? "bg-[#EBF4FC] text-[#3155C8] dark:bg-[#1E2E56] dark:text-[#93C5FD]"
-                      : "text-[#60718B] hover:bg-[#F1F6FB] hover:text-[#243B73] dark:text-[#94A3B8] dark:hover:bg-[#152244] dark:hover:text-white"
+                      ? "border border-[#DCE9F5] bg-white text-[#3155C8] dark:border-[#334676] dark:bg-[#1E2E56] dark:text-[#93C5FD]"
+                      : "text-[#60718B] hover:bg-white/60 hover:text-[#243B73] dark:text-[#94A3B8] dark:hover:bg-[#152244]/60 dark:hover:text-white"
                   )}
                 >
                   <link.icon className="size-5" />
@@ -178,7 +178,7 @@ export function Navbar() {
           </nav>
 
           {/* Mobile User or Auth Buttons */}
-          <div className="mt-4 border-t border-[#E2ECF6] pt-4 dark:border-[#24345E]">
+          <div className="mt-4 border-t border-[#DCE9F5] pt-4 dark:border-[#24345E]">
             <UserMenu />
           </div>
         </div>

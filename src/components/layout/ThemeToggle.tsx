@@ -28,21 +28,23 @@ export function ThemeToggle({ showLabel = false, className }: ThemeToggleProps) 
         aria-label="Toggle theme"
         className={cn(
           "group relative flex items-center gap-2 rounded-full p-1.5 transition-none",
-          "border border-[#E2ECF6] bg-white/80 text-[#243B73] shadow-xs",
-          "dark:border-[#24345E] dark:bg-[#152244]/80 dark:text-[#93C5FD]",
+          "border border-[#DCE9F5] bg-white text-[#243B73] shadow-xs",
+          "dark:border-[#24345E] dark:bg-[#152244] dark:text-[#93C5FD]",
           className
         )}
       >
         <div className="relative flex items-center">
-          <div className="relative h-6 w-11 rounded-full bg-[#F1F6FB] border border-[#E2ECF6] dark:border-[#24345E] dark:bg-[#0B132B]">
-            <div className="absolute top-0.5 left-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-[#3155C8] text-white shadow-xs">
-              <Sun className="size-2.5 text-white" />
+          <div className="relative h-6 w-11 rounded-full bg-[#EAF3FC] border border-[#DCE9F5] dark:border-[#24345E] dark:bg-[#0B132B]">
+            <div className="absolute top-0.5 left-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-[#3155C8] text-white shadow-xs dark:translate-x-5 dark:bg-[#4671F6]">
+              <Sun className="size-2.5 text-white dark:hidden" />
+              <Moon className="size-2.5 text-white hidden dark:block" />
             </div>
           </div>
         </div>
         {showLabel && (
           <span className="text-xs font-medium tracking-tight text-[#60718B] dark:text-[#94A3B8] pr-1">
-            Light
+            <span className="dark:hidden">Light</span>
+            <span className="hidden dark:inline">Dark</span>
           </span>
         )}
       </button>
@@ -57,19 +59,19 @@ export function ThemeToggle({ showLabel = false, className }: ThemeToggleProps) 
       onClick={toggleTheme}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       className={cn(
-        "group relative flex items-center gap-2 rounded-full p-1.5 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3985F5]",
-        "border border-[#E2ECF6] bg-white/80 hover:bg-[#EBF4FC]/60 text-[#243B73] shadow-xs",
-        "dark:border-[#24345E] dark:bg-[#152244]/80 dark:hover:bg-[#1E2E56] dark:text-[#93C5FD]",
+        "group relative flex items-center gap-2 rounded-full p-1.5 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3985F5]",
+        "border border-[#DCE9F5] bg-white hover:bg-[#F1F6FB] text-[#243B73] shadow-xs",
+        "dark:border-[#24345E] dark:bg-[#152244] dark:hover:bg-[#1E2E56] dark:text-[#93C5FD]",
         className
       )}
     >
       <div className="relative flex items-center">
         {/* Toggle Track Pill */}
-        <div className="relative h-6 w-11 rounded-full bg-[#F1F6FB] transition-colors duration-300 dark:bg-[#0B132B] border border-[#E2ECF6] dark:border-[#24345E]">
+        <div className="relative h-6 w-11 rounded-full bg-[#EAF3FC] transition-colors duration-200 dark:bg-[#0B132B] border border-[#DCE9F5] dark:border-[#24345E]">
           {/* Thumb */}
           <div
             className={cn(
-              "absolute top-0.5 left-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-[#3155C8] text-white shadow-xs transition-transform duration-300 dark:bg-[#4671F6]",
+              "absolute top-0.5 left-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-[#3155C8] text-white shadow-xs transition-transform duration-200 dark:bg-[#4671F6]",
               isDark && "translate-x-5"
             )}
           >

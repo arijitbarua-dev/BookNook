@@ -19,24 +19,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     try {
-      const savedTheme = localStorage.getItem("booknook-theme") as Theme | null
-      if (savedTheme === "dark" || savedTheme === "light") {
-        setThemeState(savedTheme)
-        if (savedTheme === "dark") {
-          document.documentElement.classList.add("dark")
-        } else {
-          document.documentElement.classList.remove("dark")
-        }
-      } else {
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
-        const initialTheme: Theme = prefersDark ? "dark" : "light"
-        setThemeState(initialTheme)
-        if (prefersDark) {
-          document.documentElement.classList.add("dark")
-        } else {
-          document.documentElement.classList.remove("dark")
-        }
-      }
+      const isCurrentlyDark = document.documentElement.classList.contains("dark")
+      setThemeState(isCurrentlyDark ? "dark" : "light")
     } catch {
       // Fallback to light
     }

@@ -45,6 +45,23 @@ interface SlideData {
 const slides: SlideData[] = [
   {
     id: 1,
+    tag: "Community Powered",
+    tagIcon: Share2,
+    heading: "Share Books, Share",
+    highlightWord: "Growing Knowledge",
+    description:
+      "Add books to our growing community library and help others discover something wonderful. Learn and share together.",
+    buttonText: "Browse Books",
+    buttonHref: "/books",
+    image: "/images/slider3.jpg",
+    statBadge: {
+      icon: Users,
+      title: "Active Readers",
+      subtitle: "Growing every day",
+    },
+  },
+  {
+    id: 2,
     tag: "Curated Collection",
     tagIcon: Sparkles,
     heading: "Discover Your Next Great",
@@ -61,7 +78,7 @@ const slides: SlideData[] = [
     },
   },
   {
-    id: 2,
+    id: 3,
     tag: "Daily Inspiration",
     tagIcon: BookMarked,
     heading: "A Little Reading Goes a Long",
@@ -75,23 +92,6 @@ const slides: SlideData[] = [
       icon: BookOpen,
       title: "5,000+ Titles",
       subtitle: "Fiction, Science & more",
-    },
-  },
-  {
-    id: 3,
-    tag: "Community Powered",
-    tagIcon: Share2,
-    heading: "Share Books, Share Growing",
-    highlightWord: "Knowledge",
-    description:
-      "Add books to our growing community library and help others discover something wonderful. Learn and share together.",
-    buttonText: "Browse Books",
-    buttonHref: "/books",
-    image: "/images/slider3.jpg",
-    statBadge: {
-      icon: Users,
-      title: "Active Readers",
-      subtitle: "Growing every day",
     },
   },
 ]
@@ -115,48 +115,47 @@ export function HeroSlider() {
       <div className="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-[600px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-tr from-[#DDF0FF]/40 via-[#EAF5FF]/20 to-transparent blur-3xl dark:from-[#152244]/30 dark:via-[#1E2E56]/10" />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Main Hero Card Container inspired by Reference Image 1 & 2 */}
-        <div className="relative overflow-hidden rounded-3xl border border-[#E2ECF6] bg-gradient-to-br from-white via-[#F8FAFD] to-[#EBF4FC]/40 p-6 shadow-sm transition-colors duration-300 dark:border-[#24345E] dark:from-[#131C38] dark:via-[#0F172A] dark:to-[#152244] sm:p-10 lg:p-14">
+        {/* Main Hero Card Container matching Reference Image */}
+        <div className="relative overflow-hidden rounded-[2.5rem] border border-[#DCE9F5] bg-white p-6 sm:p-10 lg:p-12 shadow-sm transition-colors duration-200 dark:border-[#24345E] dark:bg-[#131E3A]">
           {!isMounted ? (
             /* Static Pre-rendered Shell for SSR & SEO */
             <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12">
               <div className="flex flex-col items-start lg:col-span-5">
-                <div className="inline-flex items-center gap-2 rounded-full border border-[#DCE9F5] bg-white px-3.5 py-1.5 text-xs font-bold text-[#3155C8] shadow-2xs dark:border-[#24345E] dark:bg-[#1E2E56] dark:text-[#93C5FD]">
+                <div className="inline-flex items-center gap-2 rounded-full border border-[#DCE9F5] bg-[#F1F7FD] px-3.5 py-1.5 text-xs font-semibold text-[#3155C8] shadow-2xs dark:border-[#24345E] dark:bg-[#1E2E56] dark:text-[#93C5FD]">
                   <FirstTagIcon className="size-3.5 text-[#3985F5]" />
                   <span>{firstSlide.tag}</span>
                 </div>
 
-                <h1 className="mt-5 font-heading text-3xl font-black tracking-tight text-[#243B73] sm:text-4xl lg:text-[2.75rem] lg:leading-[1.18] dark:text-white">
+                <h1 className="mt-5 font-heading text-3xl font-black tracking-tight text-[#1E293B] sm:text-4xl lg:text-[2.65rem] lg:leading-[1.18] dark:text-white">
                   {firstSlide.heading}{" "}
-                  <span className="relative inline-block text-[#3155C8] dark:text-[#4671F6]">
+                  <span className="block text-[#3155C8] dark:text-[#4671F6]">
                     {firstSlide.highlightWord}
-                    <span className="absolute -bottom-1 left-0 h-1.5 w-full rounded-full bg-[#A9D2F5]/60 dark:bg-[#3985F5]/40" />
                   </span>
                 </h1>
 
-                <p className="mt-4 text-base font-medium leading-relaxed text-[#60718B] sm:text-lg dark:text-[#94A3B8] max-w-xl">
+                <p className="mt-4 text-base font-normal leading-relaxed text-[#60718B] sm:text-lg dark:text-[#94A3B8] max-w-xl">
                   {firstSlide.description}
                 </p>
 
                 <div className="mt-7 flex flex-wrap items-center gap-3.5">
                   <Link
                     href={firstSlide.buttonHref}
-                    className="inline-flex items-center gap-2.5 rounded-full bg-[#3155C8] px-7 py-3.5 text-sm font-bold text-white shadow-md hover:bg-[#243B73] dark:bg-[#3985F5]"
+                    className="inline-flex items-center gap-2.5 rounded-full bg-[#3155C8] px-7 py-3.5 text-sm font-bold text-white shadow-sm hover:bg-[#243B73] dark:bg-[#3985F5]"
                   >
                     <span>{firstSlide.buttonText}</span>
                     <ArrowRight className="size-4" />
                   </Link>
                 </div>
 
-                <div className="mt-8 flex items-center gap-4 pt-5 border-t border-[#E2ECF6] dark:border-[#24345E]/80 w-full">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#EBF4FC] text-[#3155C8] dark:bg-[#1E2E56] dark:text-[#93C5FD]">
+                <div className="mt-8 flex items-center gap-4 pt-5 border-t border-[#EAF2FA] dark:border-[#24345E]/80 w-full">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[#DCE9F5] bg-[#F1F7FD] text-[#3155C8] dark:border-[#24345E] dark:bg-[#1E2E56] dark:text-[#93C5FD]">
                     <BookOpen className="size-5" />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#3155C8] dark:text-[#93C5FD]">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#3155C8] dark:text-[#93C5FD]">
                       Online Library
                     </span>
-                    <span className="text-xs font-medium text-[#60718B] dark:text-[#94A3B8]">
+                    <span className="text-xs font-normal text-[#60718B] dark:text-[#94A3B8]">
                       Free community borrowing with 24/7 digital access.
                     </span>
                   </div>
@@ -165,8 +164,8 @@ export function HeroSlider() {
 
               {/* Right Column: Clear, Full-View Illustration */}
               <div className="relative flex flex-col items-center justify-center lg:col-span-7 w-full">
-                <div className="group relative w-full overflow-hidden rounded-2xl border border-[#E2ECF6] bg-white p-2.5 sm:p-3.5 shadow-md dark:border-[#24345E] dark:bg-[#152244]">
-                  <div className="relative aspect-[718/262] w-full overflow-hidden rounded-xl bg-white dark:bg-white">
+                <div className="group relative w-full overflow-hidden rounded-2xl border border-[#DCE9F5] bg-[#F4F9FE] p-3 sm:p-5 dark:border-[#24345E] dark:bg-[#0E172E]">
+                  <div className="relative aspect-[718/262] w-full overflow-hidden rounded-xl bg-transparent">
                     <Image
                       src={firstSlide.image}
                       alt={firstSlide.heading}
@@ -179,11 +178,11 @@ export function HeroSlider() {
                 </div>
 
                 {/* Stat Badge placed cleanly underneath without covering illustration */}
-                <div className="mt-3.5 inline-flex items-center gap-2.5 rounded-full border border-[#DCE9F5] bg-white px-4 py-1.5 shadow-2xs dark:border-[#24345E] dark:bg-[#152244]">
+                <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#DCE9F5] bg-white px-4 py-1.5 shadow-2xs dark:border-[#24345E] dark:bg-[#152244]">
                   <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#EBF4FC] text-[#3155C8] dark:bg-[#1E2E56] dark:text-[#93C5FD]">
                     <FirstStatIcon className="size-3" />
                   </div>
-                  <span className="text-xs font-bold text-[#243B73] dark:text-white">
+                  <span className="text-xs font-semibold text-[#243B73] dark:text-white">
                     {firstSlide.statBadge.title}
                   </span>
                   <span className="text-xs text-[#60718B] dark:text-[#94A3B8]">
@@ -219,22 +218,21 @@ export function HeroSlider() {
                       {/* Left Column: Editorial Headline & Actions */}
                       <div className="flex flex-col items-start lg:col-span-5">
                         {/* Tag Badge */}
-                        <div className="inline-flex items-center gap-2 rounded-full border border-[#DCE9F5] bg-white px-3.5 py-1.5 text-xs font-bold text-[#3155C8] shadow-2xs transition-colors dark:border-[#24345E] dark:bg-[#1E2E56] dark:text-[#93C5FD]">
+                        <div className="inline-flex items-center gap-2 rounded-full border border-[#DCE9F5] bg-[#F1F7FD] px-3.5 py-1.5 text-xs font-semibold text-[#3155C8] shadow-2xs transition-colors dark:border-[#24345E] dark:bg-[#1E2E56] dark:text-[#93C5FD]">
                           <TagIcon className="size-3.5 text-[#3985F5]" />
                           <span>{slide.tag}</span>
                         </div>
 
                         {/* Main Heading */}
-                        <h1 className="mt-5 font-heading text-3xl font-black tracking-tight text-[#243B73] sm:text-4xl lg:text-[2.75rem] lg:leading-[1.18] dark:text-white">
+                        <h1 className="mt-5 font-heading text-3xl font-black tracking-tight text-[#1E293B] sm:text-4xl lg:text-[2.65rem] lg:leading-[1.18] dark:text-white">
                           {slide.heading}{" "}
-                          <span className="relative inline-block text-[#3155C8] dark:text-[#4671F6]">
+                          <span className="block text-[#3155C8] dark:text-[#4671F6]">
                             {slide.highlightWord}
-                            <span className="absolute -bottom-1 left-0 h-1.5 w-full rounded-full bg-[#A9D2F5]/60 dark:bg-[#3985F5]/40" />
                           </span>
                         </h1>
 
                         {/* Descriptive Paragraph */}
-                        <p className="mt-4 text-base font-medium leading-relaxed text-[#60718B] sm:text-lg dark:text-[#94A3B8] max-w-xl">
+                        <p className="mt-4 text-base font-normal leading-relaxed text-[#60718B] sm:text-lg dark:text-[#94A3B8] max-w-xl">
                           {slide.description}
                         </p>
 
@@ -242,7 +240,7 @@ export function HeroSlider() {
                         <div className="mt-7 flex flex-wrap items-center gap-3.5">
                           <Link
                             href={slide.buttonHref}
-                            className="group inline-flex items-center gap-2.5 rounded-full bg-[#3155C8] px-7 py-3.5 text-sm font-bold text-white shadow-md transition-all duration-200 hover:bg-[#243B73] hover:shadow-lg active:scale-95 dark:bg-[#3985F5] dark:hover:bg-[#3155C8]"
+                            className="group inline-flex items-center gap-2.5 rounded-full bg-[#3155C8] px-7 py-3.5 text-sm font-bold text-white shadow-sm transition-all duration-200 hover:bg-[#243B73] hover:shadow-md active:scale-95 dark:bg-[#3985F5] dark:hover:bg-[#3155C8]"
                           >
                             <span>{slide.buttonText}</span>
                             <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
@@ -259,15 +257,15 @@ export function HeroSlider() {
                         </div>
 
                         {/* Small Trust Feature / News teaser */}
-                        <div className="mt-8 flex items-center gap-4 pt-5 border-t border-[#E2ECF6] dark:border-[#24345E]/80 w-full">
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#EBF4FC] text-[#3155C8] dark:bg-[#1E2E56] dark:text-[#93C5FD]">
+                        <div className="mt-8 flex items-center gap-4 pt-5 border-t border-[#EAF2FA] dark:border-[#24345E]/80 w-full">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[#DCE9F5] bg-[#F1F7FD] text-[#3155C8] dark:border-[#24345E] dark:bg-[#1E2E56] dark:text-[#93C5FD]">
                             <BookOpen className="size-5" />
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-xs font-bold uppercase tracking-wider text-[#3155C8] dark:text-[#93C5FD]">
+                            <span className="text-[11px] font-bold uppercase tracking-wider text-[#3155C8] dark:text-[#93C5FD]">
                               Online Library
                             </span>
-                            <span className="text-xs font-medium text-[#60718B] dark:text-[#94A3B8]">
+                            <span className="text-xs font-normal text-[#60718B] dark:text-[#94A3B8]">
                               Free community borrowing with 24/7 digital access.
                             </span>
                           </div>
@@ -276,25 +274,25 @@ export function HeroSlider() {
 
                       {/* Right Column: Full-View Clear Illustration */}
                       <div className="relative flex flex-col items-center justify-center lg:col-span-7 w-full">
-                        <div className="group relative w-full overflow-hidden rounded-2xl border border-[#E2ECF6] bg-white p-2.5 sm:p-3.5 shadow-md transition-all duration-300 dark:border-[#24345E] dark:bg-[#152244]">
-                          <div className="relative aspect-[718/262] w-full overflow-hidden rounded-xl bg-white dark:bg-white">
+                        <div className="group relative w-full overflow-hidden rounded-2xl border border-[#DCE9F5] bg-[#F4F9FE] p-3 sm:p-5 dark:border-[#24345E] dark:bg-[#0E172E]">
+                          <div className="relative aspect-[718/262] w-full overflow-hidden rounded-xl bg-transparent">
                             <Image
                               src={slide.image}
                               alt={slide.heading}
                               fill
                               sizes="(max-width: 1024px) 100vw, 58vw"
                               priority
-                              className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-102"
+                              className="h-full w-full object-contain"
                             />
                           </div>
                         </div>
 
                         {/* Stat Badge placed cleanly underneath */}
-                        <div className="mt-3.5 inline-flex items-center gap-2.5 rounded-full border border-[#DCE9F5] bg-white px-4 py-1.5 shadow-2xs dark:border-[#24345E] dark:bg-[#152244]">
+                        <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#DCE9F5] bg-white px-4 py-1.5 shadow-2xs dark:border-[#24345E] dark:bg-[#152244]">
                           <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#EBF4FC] text-[#3155C8] dark:bg-[#1E2E56] dark:text-[#93C5FD]">
                             <StatIcon className="size-3" />
                           </div>
-                          <span className="text-xs font-bold text-[#243B73] dark:text-white">
+                          <span className="text-xs font-semibold text-[#243B73] dark:text-white">
                             {slide.statBadge.title}
                           </span>
                           <span className="text-xs text-[#60718B] dark:text-[#94A3B8]">
@@ -310,7 +308,7 @@ export function HeroSlider() {
           )}
 
           {/* Slider Controls Bar (Bottom Left Navigation & Dots) */}
-          <div className="mt-8 flex items-center justify-between border-t border-[#E2ECF6] pt-6 dark:border-[#24345E]">
+          <div className="mt-8 flex items-center justify-between border-t border-[#EAF2FA] pt-6 dark:border-[#24345E]">
             {/* Pagination Indicators (Dots / Active Pill) */}
             <div className="flex items-center gap-2">
               {slides.map((_, index) => (
@@ -319,10 +317,10 @@ export function HeroSlider() {
                   type="button"
                   onClick={() => swiperInstance?.slideToLoop(index)}
                   aria-label={`Go to slide ${index + 1}`}
-                  className={`h-2.5 rounded-full transition-all duration-300 ${
+                  className={`h-2 rounded-full transition-all duration-300 ${
                     activeIndex === index
-                      ? "w-8 bg-[#3155C8] dark:bg-[#4671F6]"
-                      : "w-2.5 bg-[#DCE9F5] hover:bg-[#A9D2F5] dark:bg-[#24345E] dark:hover:bg-[#334155]"
+                      ? "w-6 bg-[#3155C8] dark:bg-[#4671F6]"
+                      : "w-2 bg-[#DCE9F5] hover:bg-[#A9D2F5] dark:bg-[#24345E] dark:hover:bg-[#334155]"
                   }`}
                 />
               ))}
@@ -334,7 +332,7 @@ export function HeroSlider() {
                 type="button"
                 onClick={() => swiperInstance?.slidePrev()}
                 aria-label="Previous slide"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-[#DCE9F5] bg-white text-[#243B73] shadow-2xs transition-all duration-200 hover:border-[#3985F5] hover:bg-[#EBF4FC] hover:text-[#3155C8] active:scale-90 dark:border-[#24345E] dark:bg-[#152244] dark:text-slate-200 dark:hover:bg-[#1E2E56] dark:hover:text-[#93C5FD]"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-[#DCE9F5] bg-white text-[#60718B] shadow-2xs transition-all duration-200 hover:border-[#3985F5] hover:bg-[#EBF4FC] hover:text-[#3155C8] active:scale-90 dark:border-[#24345E] dark:bg-[#152244] dark:text-slate-200 dark:hover:bg-[#1E2E56] dark:hover:text-[#93C5FD]"
               >
                 <ChevronLeft className="size-5" />
               </button>

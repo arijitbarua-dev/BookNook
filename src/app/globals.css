@@ -33,7 +33,7 @@
 }
 
 :root {
-  --background: #F8FAFD;
+  --background: #EAF3FC;
   --foreground: #243B73;
   --card: #FFFFFF;
   --card-foreground: #243B73;
@@ -43,13 +43,13 @@
   --primary-foreground: #FFFFFF;
   --secondary: #EBF4FC;
   --secondary-foreground: #3155C8;
-  --muted: #F1F6FB;
+  --muted: #E2ECF6;
   --muted-foreground: #60718B;
   --accent: #3985F5;
   --accent-foreground: #FFFFFF;
   --destructive: #EF4444;
-  --border: #E2ECF6;
-  --input: #E2ECF6;
+  --border: #DCE9F5;
+  --input: #DCE9F5;
   --ring: #3985F5;
   --chart-1: #3155C8;
   --chart-2: #3985F5;
@@ -63,7 +63,7 @@
   --sidebar-primary-foreground: #FFFFFF;
   --sidebar-accent: #F1F6FB;
   --sidebar-accent-foreground: #3155C8;
-  --sidebar-border: #E2ECF6;
+  --sidebar-border: #DCE9F5;
   --sidebar-ring: #3985F5;
 }
 
@@ -104,6 +104,7 @@
 @layer base {
   html {
     color-scheme: light;
+    background-color: #EAF3FC;
   }
   html.dark {
     color-scheme: dark;
