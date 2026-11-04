@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 
 export async function POST(request: Request) {
   try {
-    const apiKey =  process.env.IMGBB_API_KEY
+    const apiKey = process.env.IMGBB_API_KEY
 
     if (!apiKey) {
       return NextResponse.json(

@@ -24,19 +24,28 @@ export function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const rawCallbackUrl = searchParams.get("callbackUrl") || "/books"
+  const registeredEmail = searchParams.get("email") || ""
+  const isJustRegistered = searchParams.get("registered") === "true"
+
   // Only follow internal paths so login never redirects off-site
   const callbackUrl =
     rawCallbackUrl.startsWith("/") && !rawCallbackUrl.startsWith("//")
       ? rawCallbackUrl
       : "/books"
 
-  const [email, setEmail] = React.useState("")
+  const [email, setEmail] = React.useState(registeredEmail)
   const [password, setPassword] = React.useState("")
   const [showPassword, setShowPassword] = React.useState(false)
   const [rememberMe, setRememberMe] = React.useState(true)
   const [isLoading, setIsLoading] = React.useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = React.useState(false)
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null)
+
+  React.useEffect(() => {
+    if (registeredEmail) {
+      setEmail(registeredEmail)
+    }
+  }, [registeredEmail])
 
   // Handle Email & Password Sign In
   const handleSubmit = async (e: React.FormEvent) => {
@@ -144,6 +153,14 @@ export function LoginForm() {
 
         {/* Form Container Card */}
         <div className="relative overflow-hidden rounded-3xl border border-[#E2ECF6] bg-white/90 p-8 shadow-xl backdrop-blur-xl transition-all duration-300 dark:border-[#24345E] dark:bg-[#152244]/90 sm:p-10">
+          {/* Registration Success Banner */}
+          {isJustRegistered && !errorMessage && (
+            <div className="mb-6 flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/90 p-4 text-xs font-semibold text-emerald-800 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-300">
+              <CheckCircle2 className="size-4 shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5" />
+              <span>Account created successfully! Please sign in below to start your session.</span>
+            </div>
+          )}
+
           {/* Error Banner */}
           {errorMessage && (
             <div className="mb-6 flex items-start gap-3 rounded-2xl border border-rose-200 bg-rose-50/90 p-4 text-xs font-semibold text-rose-800 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-300">
