@@ -645,7 +645,7 @@ export function RegisterForm() {
               href="/login"
               className="font-bold text-[#3155C8] hover:underline dark:text-[#93C5FD]"
             >
-              Sign In
+              Login
             </Link>
           </div>
         </div>

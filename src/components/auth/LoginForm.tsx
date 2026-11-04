@@ -248,13 +248,13 @@ export function LoginForm() {
                 >
                   Password
                 </label>
-                {/* <button
+                <button
                   type="button"
                   onClick={() => toast.info("Password reset link will be sent to your email.")}
                   className="text-xs font-semibold text-[#3155C8] hover:underline dark:text-[#93C5FD]"
                 >
                   Forgot password?
-                </button> */}
+                </button>
               </div>
               <div className="relative mt-2">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#60718B] dark:text-[#94A3B8]">
