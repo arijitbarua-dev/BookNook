@@ -19,7 +19,7 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 import { uploadToImgBB } from "@/lib/upload"
-import { getAuthToken } from "@/lib/auth-client"
+import { getAuthToken, useSession } from "@/lib/auth-client"
 
 export const CATEGORIES = ["Fiction", "Science", "History", "Kids", "Others"] as const
 export type Category = (typeof CATEGORIES)[number]
@@ -59,11 +59,11 @@ export function BookForm({ initialData, isEdit = false, bookId, onSuccess }: Boo
     initialData?.totalCopies ?? 1
   )
 
-  // Read-only user info (can pull from localStorage/session if logged in)
-  const [addedBy, setAddedBy] = React.useState(initialData?.addedBy || "Habib Rahman")
-  const [addedByEmail, setAddedByEmail] = React.useState(
-    initialData?.addedByEmail || "habib@booknook.dev"
-  )
+  const { data: session } = useSession()
+
+  // Read-only user info (pulls dynamically from Better Auth session or localStorage)
+  const [addedBy, setAddedBy] = React.useState(initialData?.addedBy || "")
+  const [addedByEmail, setAddedByEmail] = React.useState(initialData?.addedByEmail || "")
 
   // Image Upload State
   const [imageFile, setImageFile] = React.useState<File | null>(null)
@@ -75,8 +75,41 @@ export function BookForm({ initialData, isEdit = false, bookId, onSuccess }: Boo
   const [isSubmitting, setIsSubmitting] = React.useState(false)
   const [errors, setErrors] = React.useState<Record<string, string>>({})
 
-  // Load user from local session if available
+  // Sync logged in user (Google OAuth or Email/Password) to Read-Only fields
   React.useEffect(() => {
+    if (initialData?.addedBy && initialData?.addedByEmail) {
+      setAddedBy(initialData.addedBy)
+      setAddedByEmail(initialData.addedByEmail)
+      return
+    }
+
+    if (session?.user?.email) {
+      const name = session.user.name || session.user.email.split("@")[0]
+      const email = session.user.email
+      setAddedBy(name)
+      setAddedByEmail(email)
+
+      // Sync to localStorage for local cache coherence
+      try {
+        const stored = localStorage.getItem("booknook-user")
+        if (!stored) {
+          localStorage.setItem(
+            "booknook-user",
+            JSON.stringify({
+              name,
+              email,
+              image: session.user.image || null,
+              id: session.user.id,
+            })
+          )
+          window.dispatchEvent(new Event("storage"))
+        }
+      } catch {
+        // Ignore
+      }
+      return
+    }
+
     try {
       const storedUser = localStorage.getItem("booknook-user")
       if (storedUser) {
@@ -85,9 +118,9 @@ export function BookForm({ initialData, isEdit = false, bookId, onSuccess }: Boo
         if (parsed.email) setAddedByEmail(parsed.email)
       }
     } catch {
-      // Fallback to default
+      // Fallback
     }
-  }, [])
+  }, [session, initialData])
 
   // Handle Image File Selection & ImgBB Upload
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
