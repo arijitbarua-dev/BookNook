@@ -11,10 +11,10 @@ export const metadata: Metadata = {
 
 export default function MyBorrowsPage() {
   return (
-    <RequireAuth>
-      <React.Suspense fallback={<MyBorrowsSkeleton />}>
+    <React.Suspense fallback={<MyBorrowsSkeleton />}>
+      <RequireAuth>
         <MyBorrowsView />
-      </React.Suspense>
-    </RequireAuth>
+      </RequireAuth>
+    </React.Suspense>
   )
 }

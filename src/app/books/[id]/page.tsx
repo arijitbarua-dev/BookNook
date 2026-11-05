@@ -2,19 +2,15 @@ import * as React from "react"
 import { Metadata } from "next"
 import { BookDetailsView } from "@/components/books/BookDetailsView"
 import { BookDetailsSkeleton } from "@/components/books/BookDetailsSkeleton"
+import { RequireAuth } from "@/components/auth/RequireAuth"
 
 interface BookDetailsPageProps {
   params: Promise<{ id: string }>
 }
 
-export async function generateMetadata({
-  params,
-}: BookDetailsPageProps): Promise<Metadata> {
-  const { id } = await params
-  return {
-    title: `Book Details`,
-    description: `Explore book on BookNook Online Library. Read description, check availability, and borrow instantly.`,
-  }
+export const metadata: Metadata = {
+  title: "Book Details",
+  description: "Explore book on BookNook Online Library. Read description, check availability, and borrow instantly.",
 }
 
 async function BookDetailsContent({
@@ -29,7 +25,9 @@ async function BookDetailsContent({
 export default function BookDetailsPage({ params }: BookDetailsPageProps) {
   return (
     <React.Suspense fallback={<BookDetailsSkeleton />}>
-      <BookDetailsContent paramsPromise={params} />
+      <RequireAuth>
+        <BookDetailsContent paramsPromise={params} />
+      </RequireAuth>
     </React.Suspense>
   )
 }

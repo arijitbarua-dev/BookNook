@@ -45,7 +45,13 @@ export function BookDetailsView({ bookId }: BookDetailsViewProps) {
       // Try fetching from backend API
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL
-        const res = await fetch(`${apiUrl}/books/${bookId}`, { cache: "no-store" })
+        const token = await getAuthToken()
+        const headers: Record<string, string> = {}
+        if (token) {
+          headers["Authorization"] = `Bearer ${token}`
+        }
+
+        const res = await fetch(`${apiUrl}/books/${bookId}`, { cache: "no-store", headers })
         if (res.ok) {
           const data = await res.json()
           if (data && (data._id || data.id)) {
@@ -62,7 +68,7 @@ export function BookDetailsView({ bookId }: BookDetailsViewProps) {
     }
 
     loadBook()
-  }, [bookId])
+  }, [bookId, session])
 
   // Check if current user has already borrowed this book (from local cache and server)
   const checkBorrowStatus = React.useCallback(async (userEmail: string, currentBookId: string) => {

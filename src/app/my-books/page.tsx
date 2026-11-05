@@ -11,10 +11,10 @@ export const metadata: Metadata = {
 
 export default function MyBooksPage() {
   return (
-    <RequireAuth>
-      <React.Suspense fallback={<MyBooksSkeleton />}>
+    <React.Suspense fallback={<MyBooksSkeleton />}>
+      <RequireAuth>
         <MyBooksView />
-      </React.Suspense>
-    </RequireAuth>
+      </RequireAuth>
+    </React.Suspense>
   )
 }
