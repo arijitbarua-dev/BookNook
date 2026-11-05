@@ -106,6 +106,22 @@ export function BorrowModal({
     const toastId = toast.loading("Processing your borrow request...")
 
     const bookId = book._id || book.id || "1"
+
+    // Prevent double borrow: check if current user already has this book borrowed
+    try {
+      const storedBorrows = JSON.parse(localStorage.getItem("booknook-borrows") || "[]")
+      const alreadyBorrowedLocal = storedBorrows.some(
+        (b: any) =>
+          String(b.bookId) === String(bookId) &&
+          (!b.userEmail || b.userEmail.toLowerCase() === activeEmail.toLowerCase())
+      )
+      if (alreadyBorrowedLocal) {
+        toast.error("You cannot borrow the same book two times at the same time.", { id: toastId })
+        setIsSubmitting(false)
+        return
+      }
+    } catch {}
+
     const borrowRecord = {
       bookId: String(bookId),
       bookTitle: book.title,
@@ -120,45 +136,41 @@ export function BorrowModal({
       const apiUrl = process.env.NEXT_PUBLIC_API_URL
       let newCopies = Math.max(0, (book.availableCopies ?? 1) - 1)
 
-      try {
-        const token = await getAuthToken()
-        const headers: Record<string, string> = { "Content-Type": "application/json" }
-        if (token) {
-          headers["Authorization"] = `Bearer ${token}`
-        }
+      const token = await getAuthToken()
+      const headers: Record<string, string> = { "Content-Type": "application/json" }
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`
+      }
 
-        const res = await fetch(`${apiUrl}/borrows`, {
-          method: "POST",
-          headers,
-          body: JSON.stringify(borrowRecord),
-        })
+      const res = await fetch(`${apiUrl}/borrows`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(borrowRecord),
+      })
 
-        if (!res.ok) {
-          const errData = await res.json().catch(() => null)
-          throw new Error(errData?.error || "Failed to borrow book.")
-        }
+      if (!res.ok) {
+        const errData = await res.json().catch(() => null)
+        const errorMsg = errData?.error || "Failed to borrow book."
+        throw new Error(errorMsg)
+      }
 
-        const data = await res.json()
-        if (typeof data.availableCopies === "number") {
-          newCopies = data.availableCopies
-        }
-      } catch (networkErr: any) {
-        if (networkErr.message?.includes("already borrowed")) {
-          onBorrowSuccess(book.availableCopies ?? 0)
-          window.dispatchEvent(new Event("storage"))
-          throw networkErr
-        }
-        console.warn("Server request failed!", networkErr)
+      const data = await res.json()
+      if (typeof data.availableCopies === "number") {
+        newCopies = data.availableCopies
       }
 
       // Sync with localStorage borrows cache
       try {
         const storedBorrows = JSON.parse(localStorage.getItem("booknook-borrows") || "[]")
-        const exists = storedBorrows.some((b: any) => String(b.bookId) === String(bookId))
+        const exists = storedBorrows.some(
+          (b: any) =>
+            String(b.bookId) === String(bookId) &&
+            (!b.userEmail || b.userEmail.toLowerCase() === activeEmail.toLowerCase())
+        )
         if (!exists) {
           storedBorrows.unshift({
             ...borrowRecord,
-            _id: `borrow_${Date.now()}`,
+            _id: data.insertedId || `borrow_${Date.now()}`,
           })
           localStorage.setItem("booknook-borrows", JSON.stringify(storedBorrows))
         }
@@ -175,7 +187,12 @@ export function BorrowModal({
       onBorrowSuccess(newCopies)
       onClose()
     } catch (err: any) {
-      toast.error(err.message || "Failed to borrow this book!", { id: toastId })
+      const msg = err.message || ""
+      if (msg.includes("already borrowed") || msg.includes("two times")) {
+        toast.error("You cannot borrow the same book two times at the same time.", { id: toastId })
+      } else {
+        toast.error(msg || "Failed to borrow this book!", { id: toastId })
+      }
     } finally {
       setIsSubmitting(false)
     }

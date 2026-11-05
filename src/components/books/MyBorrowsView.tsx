@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { createPortal } from "react-dom"
 import Link from "next/link"
 import Image from "next/image"
 import {
@@ -45,6 +46,24 @@ export function MyBorrowsView() {
   const [returningBorrow, setReturningBorrow] = React.useState<BorrowRecord | null>(null)
   const [isReturnModalOpen, setIsReturnModalOpen] = React.useState(false)
   const [isReturning, setIsReturning] = React.useState(false)
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsReturnModalOpen(false)
+        setReturningBorrow(null)
+      }
+    }
+    if (isReturnModalOpen) {
+      document.addEventListener("keydown", handleKeyDown)
+    }
+    return () => document.removeEventListener("keydown", handleKeyDown)
+  }, [isReturnModalOpen])
 
   // Sync user state from Better Auth session or local storage
   React.useEffect(() => {
@@ -295,7 +314,7 @@ export function MyBorrowsView() {
 
         {/* Top Stats Banner */}
         <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div className="rounded-3xl border border-[#E2ECF6] bg-white p-5 shadow-xs transition-colors dark:border-[#24345E] dark:bg-[#152244]">
+          <div className="rounded-3xl border border-[#DCE9F5] bg-white p-5 shadow-xs transition-colors dark:border-[#24345E] dark:bg-[#131E3A]">
             <span className="text-xs font-semibold text-[#60718B] dark:text-[#94A3B8]">
               Active Borrowings
             </span>
@@ -307,7 +326,7 @@ export function MyBorrowsView() {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-[#E2ECF6] bg-white p-5 shadow-xs transition-colors dark:border-[#24345E] dark:bg-[#152244]">
+          <div className="rounded-3xl border border-[#DCE9F5] bg-white p-5 shadow-xs transition-colors dark:border-[#24345E] dark:bg-[#131E3A]">
             <span className="text-xs font-semibold text-[#60718B] dark:text-[#94A3B8]">
               Due Soon / Overdue
             </span>
@@ -319,7 +338,7 @@ export function MyBorrowsView() {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-[#E2ECF6] bg-white p-5 shadow-xs transition-colors dark:border-[#24345E] dark:bg-[#152244]">
+          <div className="rounded-3xl border border-[#DCE9F5] bg-white p-5 shadow-xs transition-colors dark:border-[#24345E] dark:bg-[#131E3A]">
             <span className="text-xs font-semibold text-[#60718B] dark:text-[#94A3B8]">
               Available Borrow Limit
             </span>
@@ -362,128 +381,155 @@ export function MyBorrowsView() {
               </Link>
             </div>
           ) : (
-            /* Borrow Cards Grid */
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {borrows.map((borrow) => {
-                const borrowId = borrow._id
-                const bookId = borrow.bookId
-                const status = getDueStatus(borrow.returnDate)
-                const StatusIcon = status.icon
+            /* Borrowed Books Table */
+            <div className="overflow-hidden rounded-3xl border border-[#DCE9F5] bg-white shadow-sm dark:border-[#24345E] dark:bg-[#131E3A]">
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[680px] border-collapse text-left">
+                  <thead>
+                    <tr className="border-b border-[#DCE9F5] bg-[#F4F9FE] text-xs font-bold uppercase tracking-wider text-[#60718B] dark:border-[#24345E] dark:bg-[#152244]/80 dark:text-[#94A3B8]">
+                      <th scope="col" className="py-4 pl-6 pr-3 w-24">
+                        Image
+                      </th>
+                      <th scope="col" className="px-4 py-4">
+                        Title
+                      </th>
+                      <th scope="col" className="px-4 py-4">
+                        Borrow Date
+                      </th>
+                      <th scope="col" className="px-4 py-4">
+                        Return Date
+                      </th>
+                      <th scope="col" className="py-4 pl-3 pr-6 text-right">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#EAF2FA] text-sm dark:divide-[#24345E]/60">
+                    {borrows.map((borrow) => {
+                      const borrowId = borrow._id
+                      const bookId = borrow.bookId
+                      const status = getDueStatus(borrow.returnDate)
+                      const StatusIcon = status.icon
 
-                const formattedBorrowDate = new Date(borrow.borrowDate).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                })
+                      const formattedBorrowDate = new Date(borrow.borrowDate).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })
 
-                const formattedReturnDate = new Date(borrow.returnDate).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                })
+                      const formattedReturnDate = new Date(borrow.returnDate).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })
 
-                return (
-                  <div
-                    key={borrowId}
-                    className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-[#E2ECF6] bg-white p-5 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-[#24345E] dark:bg-[#152244]"
-                  >
-                    <div>
-                      {/* Top Media Header */}
-                      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-[#E2ECF6] bg-[#F1F6FB] dark:border-[#24345E] dark:bg-[#0B132B]">
-                        {borrow.bookImage ? (
-                          <Image
-                            src={borrow.bookImage}
-                            alt={borrow.bookTitle}
-                            fill
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                            unoptimized={borrow.bookImage?.startsWith("http")}
-                          />
-                        ) : (
-                          <div className="flex h-full w-full items-center justify-center bg-[#EBF4FC] text-[#3155C8] dark:bg-[#1E2E56] dark:text-[#93C5FD]">
-                            <BookOpen className="size-12" />
-                          </div>
-                        )}
+                      return (
+                        <tr
+                          key={borrowId}
+                          className="group transition-colors hover:bg-[#F8FBFE] dark:hover:bg-[#1E2E56]/40"
+                        >
+                          {/* Image */}
+                          <td className="py-4 pl-6 pr-3 align-middle">
+                            <Link href={`/books/${bookId}`} className="block">
+                              <div className="relative h-20 w-14 overflow-hidden rounded-xl border border-[#DCE9F5] bg-[#F1F6FB] shadow-2xs transition-transform duration-200 group-hover:scale-105 dark:border-[#24345E] dark:bg-[#0B132B]">
+                                {borrow.bookImage ? (
+                                  <Image
+                                    src={borrow.bookImage}
+                                    alt={borrow.bookTitle}
+                                    fill
+                                    sizes="56px"
+                                    className="h-full w-full object-cover"
+                                    unoptimized={borrow.bookImage?.startsWith("http")}
+                                  />
+                                ) : (
+                                  <div className="flex h-full w-full items-center justify-center bg-[#EBF4FC] text-[#3155C8] dark:bg-[#1E2E56] dark:text-[#93C5FD]">
+                                    <BookOpen className="size-6" />
+                                  </div>
+                                )}
+                              </div>
+                            </Link>
+                          </td>
 
-                        {/* Due Status Badge Overlay */}
-                        <div className="absolute top-3 right-3">
-                          <span
-                            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-bold shadow-xs backdrop-blur-md ${status.badgeClass}`}
-                          >
-                            <StatusIcon className="size-3" />
-                            <span>{status.label}</span>
-                          </span>
-                        </div>
-                      </div>
+                          {/* Title */}
+                          <td className="px-4 py-4 align-middle">
+                            <div className="flex flex-col">
+                              <Link
+                                href={`/books/${bookId}`}
+                                className="font-heading text-base font-bold text-[#243B73] transition-colors hover:text-[#3155C8] dark:text-white dark:hover:text-[#93C5FD]"
+                              >
+                                {borrow.bookTitle}
+                              </Link>
+                              <span className="mt-1 flex items-center gap-1.5 text-xs text-[#60718B] dark:text-[#94A3B8]">
+                                <Library className="size-3 text-[#3985F5]" />
+                                <span>Borrow ID: <span className="font-mono text-[11px] font-semibold">{borrowId.slice(-6)}</span></span>
+                              </span>
+                            </div>
+                          </td>
 
-                      {/* Content Info */}
-                      <div className="mt-4">
-                        <h3 className="line-clamp-1 font-heading text-lg font-bold text-[#243B73] transition-colors group-hover:text-[#3155C8] dark:text-white dark:group-hover:text-[#93C5FD]">
-                          {borrow.bookTitle}
-                        </h3>
+                          {/* Borrow Date */}
+                          <td className="px-4 py-4 align-middle">
+                            <div className="inline-flex items-center gap-2 rounded-xl bg-[#F8FAFD] border border-[#DCE9F5] px-3 py-1.5 text-xs font-semibold text-[#243B73] dark:border-[#24345E] dark:bg-[#0B132B] dark:text-slate-200">
+                              <Calendar className="size-3.5 text-[#3985F5]" />
+                              <span>{formattedBorrowDate}</span>
+                            </div>
+                          </td>
 
-                        {/* Dates Grid Box */}
-                        <div className="mt-3 space-y-2 rounded-2xl border border-[#E2ECF6] bg-[#F8FAFD] p-3 text-xs dark:border-[#24345E] dark:bg-[#0B132B]">
-                          <div className="flex items-center justify-between">
-                            <span className="flex items-center gap-1.5 text-[#60718B] dark:text-[#94A3B8]">
-                              <Calendar className="size-3 text-[#3985F5]" />
-                              <span>Borrowed:</span>
-                            </span>
-                            <span className="font-semibold text-[#243B73] dark:text-slate-200">
-                              {formattedBorrowDate}
-                            </span>
-                          </div>
+                          {/* Return Date */}
+                          <td className="px-4 py-4 align-middle">
+                            <div className="flex flex-col items-start gap-1.5">
+                              {/* <div className="inline-flex items-center gap-2 rounded-xl bg-[#F8FAFD] border border-[#DCE9F5] px-3 py-1.5 text-xs font-semibold text-[#243B73] dark:border-[#24345E] dark:bg-[#0B132B] dark:text-slate-200">
+                                <Clock className="size-3.5 text-[#3985F5]" />
+                                <span>{formattedReturnDate}</span>
+                              </div> */}
+                              <span
+                                className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-bold shadow-2xs ${status.badgeClass}`}
+                              >
+                                <StatusIcon className="size-3" />
+                                <span>{status.label}</span>
+                              </span>
+                            </div>
+                          </td>
 
-                          <div className="flex items-center justify-between border-t border-[#E2ECF6] pt-1.5 dark:border-[#24345E]">
-                            <span className="flex items-center gap-1.5 text-[#60718B] dark:text-[#94A3B8]">
-                              <Clock className="size-3 text-[#3985F5]" />
-                              <span>Due Date:</span>
-                            </span>
-                            <span className="font-semibold text-[#243B73] dark:text-slate-200">
-                              {formattedReturnDate}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Actions Bar */}
-                    <div className="mt-5 flex items-center gap-2 border-t border-[#E2ECF6] pt-4 dark:border-[#24345E]">
-                      {/* View Book Details */}
-                      <Link
-                        href={`/books/${bookId}`}
-                        aria-label="View book details"
-                        className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#EBF4FC] py-2 text-xs font-bold text-[#3155C8] transition-all hover:bg-[#3155C8] hover:text-white active:scale-98 dark:bg-[#1E2E56] dark:text-[#93C5FD] dark:hover:bg-[#3985F5] dark:hover:text-white"
-                      >
-                        <ExternalLink className="size-3.5" />
-                        <span>View Book</span>
-                      </Link>
-
-                      {/* Return Book Button */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setReturningBorrow(borrow)
-                          setIsReturnModalOpen(true)
-                        }}
-                        className="inline-flex items-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50/70 px-4 py-2 text-xs font-bold text-rose-600 transition-all hover:bg-rose-600 hover:text-white active:scale-95 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-300 dark:hover:bg-rose-600 dark:hover:text-white"
-                      >
-                        <RotateCcw className="size-3.5" />
-                        <span>Return Book</span>
-                      </button>
-                    </div>
-                  </div>
-                )
-              })}
+                          {/* Return Book Button */}
+                          <td className="py-4 pl-3 pr-6 text-right align-middle">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setReturningBorrow(borrow)
+                                setIsReturnModalOpen(true)
+                              }}
+                              className="inline-flex items-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50 px-4 py-2.5 text-xs font-bold text-rose-600 shadow-2xs transition-all hover:bg-rose-600 hover:text-white active:scale-95 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-300 dark:hover:bg-rose-600 dark:hover:text-white"
+                            >
+                              <RotateCcw className="size-3.5" />
+                              <span>Return Book</span>
+                            </button>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
         </div>
       </div>
 
-      {/* Return Confirmation Modal */}
-      {isReturnModalOpen && returningBorrow && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="relative w-full max-w-sm rounded-3xl border border-[#E2ECF6] bg-white p-6 shadow-2xl dark:border-[#24345E] dark:bg-[#152244] sm:p-7">
+      {/* Return Confirmation Modal via Portal */}
+      {isReturnModalOpen && returningBorrow && mounted && createPortal(
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
+          onClick={() => {
+            if (!isReturning) {
+              setIsReturnModalOpen(false)
+              setReturningBorrow(null)
+            }
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-sm rounded-3xl border border-[#DCE9F5] bg-white p-6 shadow-2xl dark:border-[#24345E] dark:bg-[#152244] sm:p-7 animate-in zoom-in-95 duration-200"
+          >
             <div className="flex flex-col items-center text-center">
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#EBF4FC] text-[#3155C8] dark:bg-[#1E2E56] dark:text-[#93C5FD]">
                 <RotateCcw className="size-7" />
@@ -504,7 +550,7 @@ export function MyBorrowsView() {
                     setReturningBorrow(null)
                   }}
                   disabled={isReturning}
-                  className="flex-1 rounded-2xl border border-[#DCE9F5] py-2.5 text-xs font-bold text-[#60718B] hover:bg-[#EBF4FC] hover:text-[#243B73] dark:border-[#24345E] dark:bg-[#0B132B] dark:text-[#94A3B8] dark:hover:bg-[#1E2E56] dark:hover:text-white"
+                  className="flex-1 rounded-2xl border border-[#DCE9F5] py-2.5 text-xs font-bold text-[#60718B] hover:bg-[#EBF4FC] hover:text-[#243B73] dark:border-[#24345E] dark:bg-[#0B132B] dark:text-[#94A3B8] dark:hover:bg-[#1E2E56] dark:hover:text-white transition-colors"
                 >
                   Keep Reading
                 </button>
@@ -512,7 +558,7 @@ export function MyBorrowsView() {
                   type="button"
                   onClick={handleConfirmReturn}
                   disabled={isReturning}
-                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-2xl bg-[#3155C8] py-2.5 text-xs font-bold text-white shadow-xs hover:bg-[#243B73] disabled:opacity-60 dark:bg-[#3985F5] dark:hover:bg-[#3155C8]"
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-2xl bg-[#3155C8] py-2.5 text-xs font-bold text-white shadow-xs hover:bg-[#243B73] disabled:opacity-60 dark:bg-[#3985F5] dark:hover:bg-[#3155C8] transition-colors"
                 >
                   {isReturning ? (
                     <>
@@ -526,7 +572,8 @@ export function MyBorrowsView() {
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   )

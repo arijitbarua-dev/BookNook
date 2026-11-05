@@ -158,6 +158,18 @@ export function BookDetailsView({ bookId }: BookDetailsViewProps) {
     window.dispatchEvent(new Event("storage"))
   }
 
+  const handleBorrowClick = () => {
+    if (isAlreadyBorrowed) {
+      toast.error("You cannot borrow the same book two times at the same time. Please return your active copy first.")
+      return
+    }
+    if (!isAvailable) {
+      toast.error("Sorry, this book is currently out of stock.")
+      return
+    }
+    setIsBorrowModalOpen(true)
+  }
+
   if (loading) {
     return (
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
@@ -337,9 +349,9 @@ export function BookDetailsView({ bookId }: BookDetailsViewProps) {
                 </div>
               </div>
 
-              {/* Action Area: Borrow Button */}
-              <div className="mt-8 pt-6 border-t border-[#E2ECF6] dark:border-[#24345E] flex flex-wrap items-center gap-4">
-                {isAlreadyBorrowed ? (
+              {/* Action Area: Borrow & Browse */}
+              <div className="mt-8 pt-6 border-t border-[#DCE9F5] dark:border-[#24345E] flex flex-col gap-4">
+                {isAlreadyBorrowed && (
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-amber-300 bg-amber-50/90 p-4 shadow-xs dark:border-amber-900/60 dark:bg-amber-950/40">
                     <div className="flex items-center gap-2.5">
                       <CheckCircle2 className="size-5 text-amber-600 dark:text-amber-400 shrink-0" />
@@ -348,7 +360,7 @@ export function BookDetailsView({ bookId }: BookDetailsViewProps) {
                           You currently have this book borrowed.
                         </p>
                         <p className="text-[11px] font-medium text-amber-700 dark:text-amber-400">
-                          You cannot borrow the same book again until you return it.
+                          You cannot borrow the same book two times at the same time.
                         </p>
                       </div>
                     </div>
@@ -360,31 +372,37 @@ export function BookDetailsView({ bookId }: BookDetailsViewProps) {
                       <ArrowRight className="size-3.5" />
                     </Link>
                   </div>
-                ) : isAvailable ? (
-                  <button
-                    type="button"
-                    onClick={() => setIsBorrowModalOpen(true)}
-                    className="inline-flex items-center gap-2.5 rounded-full bg-[#3155C8] px-8 py-3.5 text-sm font-bold text-white shadow-md transition-all hover:bg-[#243B73] hover:shadow-lg active:scale-95 dark:bg-[#3985F5] dark:hover:bg-[#3155C8]"
-                  >
-                    <BookmarkPlus className="size-4" />
-                    <span>Borrow This Book</span>
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    disabled
-                    className="cursor-not-allowed rounded-full bg-slate-200 px-8 py-3.5 text-sm font-bold text-slate-500 shadow-none dark:bg-slate-800 dark:text-slate-400"
-                  >
-                    Not Available (Out of Stock)
-                  </button>
                 )}
 
-                <Link
-                  href="/books"
-                  className="rounded-full border border-[#DCE9F5] bg-white px-6 py-3.5 text-sm font-bold text-[#60718B] shadow-2xs hover:bg-[#EBF4FC] hover:text-[#243B73] dark:border-[#24345E] dark:bg-[#152244] dark:text-[#94A3B8]"
-                >
-                  Browse Other Books
-                </Link>
+                <div className="flex flex-wrap items-center gap-4">
+                  {isAlreadyBorrowed ? (
+                    <button
+                      type="button"
+                      onClick={handleBorrowClick}
+                      className="inline-flex items-center gap-2.5 rounded-full bg-amber-600 px-8 py-3.5 text-sm font-bold text-white shadow-md transition-all hover:bg-amber-700 active:scale-95 dark:bg-amber-500 dark:text-black dark:hover:bg-amber-400"
+                    >
+                      <BookmarkPlus className="size-4" />
+                      <span>Borrow This Book</span>
+                    </button>
+                  ) : isAvailable ? (
+                    <button
+                      type="button"
+                      onClick={handleBorrowClick}
+                      className="inline-flex items-center gap-2.5 rounded-full bg-[#3155C8] px-8 py-3.5 text-sm font-bold text-white shadow-md transition-all hover:bg-[#243B73] hover:shadow-lg active:scale-95 dark:bg-[#3985F5] dark:hover:bg-[#3155C8]"
+                    >
+                      <BookmarkPlus className="size-4" />
+                      <span>Borrow This Book</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled
+                      className="cursor-not-allowed rounded-full bg-slate-200 px-8 py-3.5 text-sm font-bold text-slate-500 shadow-none dark:bg-slate-800 dark:text-slate-400"
+                    >
+                      Not Available (Out of Stock)
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
