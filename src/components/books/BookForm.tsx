@@ -335,11 +335,10 @@ export function BookForm({ initialData, isEdit = false, bookId, onSuccess }: Boo
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="e.g. To Kill a Mockingbird"
-            className={`w-full rounded-2xl border bg-white px-4 py-3 text-sm font-medium text-[#243B73] placeholder-[#94A3B8] shadow-xs outline-none transition-all focus:border-[#3985F5] focus:ring-3 focus:ring-[#3985F5]/20 dark:bg-[#152244] dark:text-white dark:placeholder-slate-500 ${
-              errors.title
-                ? "border-rose-400 focus:border-rose-500 focus:ring-rose-200"
-                : "border-[#E2ECF6] dark:border-[#24345E]"
-            }`}
+            className={`w-full rounded-2xl border bg-white px-4 py-3 text-sm font-medium text-[#243B73] placeholder-[#94A3B8] shadow-xs outline-none transition-all focus:border-[#3985F5] focus:ring-3 focus:ring-[#3985F5]/20 dark:bg-[#152244] dark:text-white dark:placeholder-slate-500 ${errors.title
+              ? "border-rose-400 focus:border-rose-500 focus:ring-rose-200"
+              : "border-[#E2ECF6] dark:border-[#24345E]"
+              }`}
           />
           {errors.title && (
             <p className="text-xs font-semibold text-rose-500">{errors.title}</p>
@@ -358,11 +357,10 @@ export function BookForm({ initialData, isEdit = false, bookId, onSuccess }: Boo
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
             placeholder="e.g. Harper Lee"
-            className={`w-full rounded-2xl border bg-white px-4 py-3 text-sm font-medium text-[#243B73] placeholder-[#94A3B8] shadow-xs outline-none transition-all focus:border-[#3985F5] focus:ring-3 focus:ring-[#3985F5]/20 dark:bg-[#152244] dark:text-white dark:placeholder-slate-500 ${
-              errors.author
-                ? "border-rose-400 focus:border-rose-500 focus:ring-rose-200"
-                : "border-[#E2ECF6] dark:border-[#24345E]"
-            }`}
+            className={`w-full rounded-2xl border bg-white px-4 py-3 text-sm font-medium text-[#243B73] placeholder-[#94A3B8] shadow-xs outline-none transition-all focus:border-[#3985F5] focus:ring-3 focus:ring-[#3985F5]/20 dark:bg-[#152244] dark:text-white dark:placeholder-slate-500 ${errors.author
+              ? "border-rose-400 focus:border-rose-500 focus:ring-rose-200"
+              : "border-[#E2ECF6] dark:border-[#24345E]"
+              }`}
           />
           {errors.author && (
             <p className="text-xs font-semibold text-rose-500">{errors.author}</p>
@@ -517,11 +515,10 @@ export function BookForm({ initialData, isEdit = false, bookId, onSuccess }: Boo
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Provide a brief synopsis, plot summary, or what readers will learn from this book..."
-          className={`w-full rounded-2xl border bg-white p-4 text-sm font-medium text-[#243B73] placeholder-[#94A3B8] shadow-xs outline-none transition-all focus:border-[#3985F5] focus:ring-3 focus:ring-[#3985F5]/20 dark:bg-[#152244] dark:text-white dark:placeholder-slate-500 ${
-            errors.description
-              ? "border-rose-400 focus:border-rose-500 focus:ring-rose-200"
-              : "border-[#E2ECF6] dark:border-[#24345E]"
-          }`}
+          className={`w-full rounded-2xl border bg-white p-4 text-sm font-medium text-[#243B73] placeholder-[#94A3B8] shadow-xs outline-none transition-all focus:border-[#3985F5] focus:ring-3 focus:ring-[#3985F5]/20 dark:bg-[#152244] dark:text-white dark:placeholder-slate-500 ${errors.description
+            ? "border-rose-400 focus:border-rose-500 focus:ring-rose-200"
+            : "border-[#E2ECF6] dark:border-[#24345E]"
+            }`}
         />
         {errors.description && (
           <p className="text-xs font-semibold text-rose-500">{errors.description}</p>
@@ -562,7 +559,7 @@ export function BookForm({ initialData, isEdit = false, bookId, onSuccess }: Boo
         <button
           type="button"
           onClick={() => router.back()}
-          className="rounded-full border border-[#DCE9F5] bg-white px-6 py-3 text-sm font-bold text-[#60718B] shadow-2xs hover:bg-[#EBF4FC] hover:text-[#243B73] dark:border-[#24345E] dark:bg-[#152244] dark:text-[#94A3B8] dark:hover:text-white"
+          className="rounded-full border border-[#DCE9F5] bg-[#EBF4FC] px-6 py-3 text-sm font-bold text-[#243B73] shadow-2xs transition-all hover:border-[#3155C8] hover:bg-[#3155C8] hover:text-white hover:shadow-md active:scale-95 dark:border-[#24345E] dark:bg-[#1E3158] dark:text-white dark:hover:border-[#3985F5] dark:hover:bg-[#3985F5]"
         >
           Cancel
         </button>
