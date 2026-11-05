@@ -29,12 +29,16 @@ import { uploadToImgBB } from "@/lib/upload"
 export function RegisterForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const rawCallbackUrl = searchParams.get("callbackUrl") || "/books"
-  // Only follow internal paths so registration never redirects off-site
+  const rawCallbackUrl = searchParams.get("callbackUrl")
+  // Only follow internal paths so registration never redirects off-site, defaulting to Home page ("/")
   const callbackUrl =
-    rawCallbackUrl.startsWith("/") && !rawCallbackUrl.startsWith("//")
+    rawCallbackUrl &&
+    rawCallbackUrl.startsWith("/") &&
+    !rawCallbackUrl.startsWith("//") &&
+    !rawCallbackUrl.startsWith("/login") &&
+    !rawCallbackUrl.startsWith("/register")
       ? rawCallbackUrl
-      : "/books"
+      : "/"
 
   const [name, setName] = React.useState("")
   const [email, setEmail] = React.useState("")
@@ -189,7 +193,7 @@ export function RegisterForm() {
 
       // Navigate to Login page with email prefilled
       const loginTarget =
-        callbackUrl && callbackUrl !== "/books"
+        callbackUrl && callbackUrl !== "/"
           ? `/login?registered=true&email=${encodeURIComponent(email.trim())}&callbackUrl=${encodeURIComponent(callbackUrl)}`
           : `/login?registered=true&email=${encodeURIComponent(email.trim())}`
 

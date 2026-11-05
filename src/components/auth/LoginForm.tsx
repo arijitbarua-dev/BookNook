@@ -18,20 +18,37 @@ import {
   ShieldCheck,
 } from "lucide-react"
 import { toast } from "sonner"
-import { authClient, signIn } from "@/lib/auth-client"
+import { authClient, signIn, useSession } from "@/lib/auth-client"
 
 export function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const rawCallbackUrl = searchParams.get("callbackUrl") || "/books"
+  const rawCallbackUrl = searchParams.get("callbackUrl")
   const registeredEmail = searchParams.get("email") || ""
   const isJustRegistered = searchParams.get("registered") === "true"
 
-  // Only follow internal paths so login never redirects off-site
-  const callbackUrl =
-    rawCallbackUrl.startsWith("/") && !rawCallbackUrl.startsWith("//")
-      ? rawCallbackUrl
-      : "/books"
+  // Navigate to their desired route if provided, otherwise default to Home page ("/")
+  const targetRoute = React.useMemo(() => {
+    if (
+      rawCallbackUrl &&
+      rawCallbackUrl.startsWith("/") &&
+      !rawCallbackUrl.startsWith("//") &&
+      !rawCallbackUrl.startsWith("/login") &&
+      !rawCallbackUrl.startsWith("/register")
+    ) {
+      return rawCallbackUrl
+    }
+    return "/"
+  }, [rawCallbackUrl])
+
+  const { data: session, isPending: isSessionLoading } = useSession()
+
+  // If already authenticated, redirect to desired route / Home page
+  React.useEffect(() => {
+    if (!isSessionLoading && session?.user) {
+      router.replace(targetRoute)
+    }
+  }, [session, isSessionLoading, targetRoute, router])
 
   const [email, setEmail] = React.useState(registeredEmail)
   const [password, setPassword] = React.useState("")
@@ -85,7 +102,7 @@ export function LoginForm() {
       window.dispatchEvent(new Event("storage"))
 
       toast.success(`Welcome back, ${loggedInUser.name}!`, { id: toastId })
-      router.push(callbackUrl)
+      router.push(targetRoute)
       router.refresh()
     } catch (err: any) {
       console.error("Sign in error:", err)
@@ -103,7 +120,7 @@ export function LoginForm() {
     try {
       await signIn.social({
         provider: "google",
-        callbackURL: callbackUrl,
+        callbackURL: targetRoute,
       })
     } catch (err: any) {
       toast.error(err.message || "Google sign-in could not be initiated.")
