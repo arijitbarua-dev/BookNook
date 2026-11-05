@@ -53,6 +53,7 @@ export function RegisterForm() {
   // Photo / Avatar via ImgBB
   const [photoUrl, setPhotoUrl] = React.useState("")
   const [photoPreview, setPhotoPreview] = React.useState("")
+  const [previewError, setPreviewError] = React.useState(false)
   const [isUploadingPhoto, setIsUploadingPhoto] = React.useState(false)
   const fileInputRef = React.useRef<HTMLInputElement>(null)
 
@@ -112,6 +113,7 @@ export function RegisterForm() {
   const handleRemovePhoto = () => {
     setPhotoUrl("")
     setPhotoPreview("")
+    setPreviewError(false)
     if (fileInputRef.current) {
       fileInputRef.current.value = ""
     }
@@ -120,6 +122,7 @@ export function RegisterForm() {
   const handlePhotoUrlChange = (val: string) => {
     setPhotoUrl(val)
     setPhotoPreview(val.trim())
+    setPreviewError(false)
   }
 
   // Password validation helpers
@@ -386,12 +389,12 @@ export function RegisterForm() {
                 {/* Circular Avatar Preview */}
                 <div className="relative group shrink-0">
                   <div className="relative flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 border-white bg-gradient-to-tr from-[#3155C8] to-[#3985F5] shadow-xs ring-2 ring-[#DCE9F5] dark:border-[#152244] dark:ring-[#24345E]">
-                    {photoPreview ? (
+                    {photoPreview && !previewError ? (
                       <img
                         src={photoPreview}
                         alt="Avatar preview"
                         className="h-full w-full object-cover"
-                        onError={() => setPhotoPreview("")}
+                        onError={() => setPreviewError(true)}
                       />
                     ) : (
                       <User className="size-7 text-white/90" />

@@ -33,6 +33,7 @@ export function UserMenu() {
   const [localUser, setLocalUser] = React.useState<LocalUser | null>(null)
   const [isOpen, setIsOpen] = React.useState(false)
   const [isProfileModalOpen, setIsProfileModalOpen] = React.useState(false)
+  const [avatarError, setAvatarError] = React.useState(false)
   const [mounted, setMounted] = React.useState(false)
   const menuRef = React.useRef<HTMLDivElement>(null)
 
@@ -74,6 +75,11 @@ export function UserMenu() {
     }
     return localUser
   }, [session, localUser])
+
+  // Reset avatar error when user image updates
+  React.useEffect(() => {
+    setAvatarError(false)
+  }, [user?.image])
 
   // Click outside listener to close dropdown and modal on Escape
   React.useEffect(() => {
@@ -161,13 +167,15 @@ export function UserMenu() {
         aria-label="Open user menu"
         className="group relative flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-gradient-to-tr from-[#3155C8] to-[#3985F5] shadow-sm transition-all duration-200 hover:ring-2 hover:ring-[#3985F5] hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#3985F5] dark:border-[#152244]"
       >
-        {user.image ? (
+        {user.image && !avatarError ? (
           <Image
             src={user.image}
             alt={user.name}
             width={40}
             height={40}
+            unoptimized
             className="h-full w-full rounded-full object-cover"
+            onError={() => setAvatarError(true)}
           />
         ) : (
           <span className="font-heading text-xs font-black tracking-wider text-white">
@@ -185,13 +193,15 @@ export function UserMenu() {
           {/* Header Profile Info */}
           <div className="flex items-center gap-3 p-2.5">
             <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-white bg-gradient-to-tr from-[#3155C8] to-[#3985F5] text-white shadow-xs dark:border-[#24345E]">
-              {user.image ? (
+              {user.image && !avatarError ? (
                 <Image
                   src={user.image}
                   alt={user.name}
                   width={44}
                   height={44}
+                  unoptimized
                   className="h-full w-full rounded-full object-cover"
+                  onError={() => setAvatarError(true)}
                 />
               ) : (
                 <span className="font-heading text-xs font-black">{initials}</span>
@@ -267,13 +277,15 @@ export function UserMenu() {
             {/* Profile Content */}
             <div className="flex flex-col items-center text-center">
               <div className="relative flex h-20 w-20 items-center justify-center rounded-full border-4 border-[#DCE9F5] bg-gradient-to-tr from-[#3155C8] to-[#3985F5] text-white shadow-md dark:border-[#24345E]">
-                {user.image ? (
+                {user.image && !avatarError ? (
                   <Image
                     src={user.image}
                     alt={user.name}
                     width={80}
                     height={80}
+                    unoptimized
                     className="h-full w-full rounded-full object-cover"
+                    onError={() => setAvatarError(true)}
                   />
                 ) : (
                   <span className="font-heading text-2xl font-black">{initials}</span>
